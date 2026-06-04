@@ -1,39 +1,76 @@
-import telebot
-import requests
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
+import urllib.parse
 
-CHAVE_API_TELEGRAM = "8934530926:AAFGj7EaSJHcwO2ncC4DUKetbXPWtHKsg_8"
-bot = telebot.TeleBot(CHAVE_API_TELEGRAM)
+# SEU TOKEN ATUALIZADO
+TOKEN = "8934530926:AAFnSJ8_uicKmHjB9xIorG_CO6G9K26XXNQ"
 
-@bot.message_handler(func=lambda message: True)
-def responder_cliente(message):
-    termo_busca = message.text
-    bot.reply_to(message, f"🔍 Buscando '{termo_busca}' no Mercado Livre... Aguarde.")
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    botoes = [
+        [InlineKeyboardButton("🔍 Buscar Produtos", callback_data='buscar')],
+        [InlineKeyboardButton("📋 Como Funciona?", callback_data='duvidas')],
+    ]
+    estrutura_menu = InlineKeyboardMarkup(botoes)
+    await update.message.reply_text(
+        "Olá! Seja bem-vindo ao nosso assistente de compras.\nEscolha uma opção:",
+        reply_markup=estrutura_menu
+    )
+
+async def gerenciar_clique_botao(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
     
-    try:
-        url = f"https://mercadolibre.com{termo_busca}"
-        response = requests.get(url, timeout=15).json()
-        resultados = response.get('results', [])
-        
-        if not resultados:
-            bot.reply_to(message, "❌ Não encontrei nenhum produto com essa descrição. Tente digitar de outra forma.")
-            return
+    if query.data == 'buscar':
+        context.user_data['aguardando_busca'] = True
+        await query.message.reply_text("Digite o nome do produto que você deseja procurar (Ex: Pneu aro 29, Smartphone):")
+    elif query.data == 'duvidas':
+        await query.message.reply_text("Nós encontramos as melhores ofertas para você! Basta clicar em 'Buscar Produtos' e digitar o que você quer.")
 
-        produto = resultados[0]
-        titulo = produto.get('title')
-        preco = produto.get('price')
-        link_original = produto.get('permalink')
+async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if context.user_data.get('aguardando_busca'):
+        produto = update.message.text
+        context.user_data['aguardando_busca'] = False
         
-        mensagem_final = (
-            f"✅ *ITEM LOCALIZADO!*\n\n"
-            f"📦 *Produto:* {titulo}\n"
-            f"💵 *Preço:* R$ {preco:.2f}\n\n"
-            f"🛒 *Clique no link abaixo para comprar com segurança:*\n"
-            f"{link_original}"
+        # CONFIGURAÇÃO DE AFILIADO ATIVADA
+        ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+        
+        # 1. Monta a URL de busca interna de forma limpa (Ex: https://mercadolivre.com.br)
+        link_busca_normal = f"https://lista.mercadolivre.com.br/{urllib.parse.quote(produto.strip())}"
+        
+        # 2. Usa a ferramenta oficial para juntar a URL com a sua Tag de Afiliado de forma segura
+        parametros = {
+            'url': link_busca_normal,
+            'subId': ID_AFILIADO_MERCADO_LIVRE
+        }
+        query_string = urllib.parse.urlencode(parametros)
+        
+        # 3. Gera o link final perfeito aceito pelo Telegram
+        link_ml = f"https://lista.mercadolivre.com.br/{query_string}"
+        
+        # MENU LIMPO E SEGURO
+        botoes_links = [
+            [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+            [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+        ]
+        structure_links = InlineKeyboardMarkup(botoes_links)
+        
+        await update.message.reply_text(
+            f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
+            parse_mode="Markdown",
+            reply_markup=structure_links
         )
-        bot.reply_to(message, mensagem_final, parse_mode="Markdown")
-        
-    except Exception as e:
-        bot.reply_to(message, "⚠️ Ocorreu uma instabilidade na pesquisa. Por favor, tente enviar novamente.")
 
-bot.polling(none_stop=True)
+def main():
+    app = Application.builder().token(TOKEN).build()
+
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CallbackQueryHandler(gerenciar_clique_botao))
+    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
+
+    print("Bot de Afiliados Ativo! Pressione Ctrl+C na tela preta para desligar.")
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
+
 
