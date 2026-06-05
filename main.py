@@ -5,6 +5,13 @@ from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
 app = Flask('')
+@app.route('/')
+def home():
+    return "Robô está online e ativo!"
+
+def run():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
 
 
 # SEU TOKEN ATUALIZADO
