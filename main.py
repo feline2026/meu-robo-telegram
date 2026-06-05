@@ -1,7 +1,10 @@
 import os
+import urllib.parse
+from threading import Thread
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
-import urllib.parse
+
 
 # SEU TOKEN ATUALIZADO
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
