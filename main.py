@@ -3,7 +3,7 @@ from telegram.ext import Application, CommandHandler, CallbackQueryHandler, Mess
 import urllib.parse
 
 # SEU TOKEN ATUALIZADO
-TOKEN = "8934530926:AAFnSJ8_uicKmHjB9xIorG_CO6G9K26XXNQ"
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     botoes = [
@@ -71,6 +71,8 @@ def main():
     app.run_polling()
 
 if __name__ == "__main__":
+    flask_thread = Thread(target=run, daemon=True)
+    flask_thread.start()
     main()
 
 
