@@ -43,23 +43,18 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         produto = update.message.text
         context.user_data['aguardando_busca'] = False
         
-        # CONFIGURAÇÃO DE AFILIADO ATIVADA
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         
-        # 1. Monta a URL de busca interna de forma limpa (Ex: https://mercadolivre.com.br)
-        link_busca_normal = f"https://lista.mercadolivre.com.br/{urllib.parse.quote(produto.strip())}"
+        link_busca_normal = f"https://mercadolivre.com.br{urllib.parse.quote(produto.strip())}"
         
-        # 2. Usa a ferramenta oficial para juntar a URL com a sua Tag de Afiliado de forma segura
         parametros = {
             'url': link_busca_normal,
             'subId': ID_AFILIADO_MERCADO_LIVRE
         }
         query_string = urllib.parse.urlencode(parametros)
         
-        # 3. Gera o link final perfeito aceito pelo Telegram
-        link_ml = f"https://lista.mercadolivre.com.br/{query_string}"
+        link_ml = f"https://mercadolivre.com.br?{query_string}"
         
-        # MENU LIMPO E SEGURO
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
             [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
