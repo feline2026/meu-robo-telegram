@@ -45,21 +45,13 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         
-        # 1. Ajusta o texto substituindo os espaços por traços (Ex: "pneu aro 15" vira "pneu-aro-15")
+        # 1. Formata o termo de busca substituindo espaços por traços
         produto_formatado = produto.strip().replace(" ", "-")
         termo_encoded = urllib.parse.quote(produto_formatado)
         
-        link_busca_normal = f"https://lista.mercadolivre.com.br/{termo_encoded}"
-        
-        # 2. Organiza os parâmetros limpos de rastreamento
-        parametros = {
-            'url': link_busca_normal,
-            'subId': ID_AFILIADO_MERCADO_LIVRE
-        }
-        query_string = urllib.parse.urlencode(parametros)
-        
-        # 3. Monta a URL de redirecionamento social oficial
-        link_ml = f"https://mercadolivre.com.br?{query_string}"
+        # 2. Gera a URL de busca direta injetando as tags de rastreamento nativas do Mercado Livre
+        # Isso garante que a página de produtos abra E a sua tag fique registrada no sistema de atribuição deles
+        link_ml = f"https://mercadolivre.com.br{termo_encoded}#jm=TARCFELL&utm_source=afiliado&utm_medium=telegram&utm_campaign={ID_AFILIADO_MERCADO_LIVRE}"
         
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
@@ -72,6 +64,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             parse_mode="Markdown",
             reply_markup=structure_links
         )
+
 
 
 
