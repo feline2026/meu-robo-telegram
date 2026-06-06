@@ -46,10 +46,12 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         
+        # Formata o termo substituindo espaços por traços para a URL ficar perfeita
         produto_formatado = produto.strip().replace(" ", "-")
         termo_encoded = urllib.parse.quote(produto_formatado)
         
-        link_ml = f"https://mercadolivre.com.br{termo_encoded}#jm=TARCFELL&utm_source=afiliado&utm_medium=telegram&utm_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+        # URL CORRIGIDA: Sem caracteres que quebram o Telegram
+        link_ml = f"https://lista.mercadolivre.com.br/{termo_encoded}#jm={ID_AFILIADO_MERCADO_LIVRE}"
         
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
@@ -77,6 +79,4 @@ if __name__ == "__main__":
     flask_thread = Thread(target=run, daemon=True)
     flask_thread.start()
     main()
-
-
 
