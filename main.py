@@ -45,15 +45,11 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         
-        link_busca_normal = f"https://mercadolivre.com.br{urllib.parse.quote(produto.strip())}"
+        # Transforma o texto em formato de busca (ex: "pneu aro 29" vira "pneu-aro-29")
+        termo_busca = urllib.parse.quote(produto.strip()).replace('%20', '-')
         
-        parametros = {
-            'url': link_busca_normal,
-            'subId': ID_AFILIADO_MERCADO_LIVRE
-        }
-        query_string = urllib.parse.urlencode(parametros)
-        
-        link_ml = f"https://mercadolivre.com.br?{query_string}"
+        # Gera o link de listagem direto com a sua tag injetada nos parâmetros nativos
+        link_ml = f"https://mercadolivre.com.br{termo_busca}?subId={ID_AFILIADO_MERCADO_LIVRE}"
         
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
@@ -66,6 +62,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             parse_mode="Markdown",
             reply_markup=structure_links
         )
+
 
 def main():
     app = Application.builder().token(TOKEN).build()
