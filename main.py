@@ -51,7 +51,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         
         # 2. Gera a URL de busca direta injetando as tags de rastreamento nativas do Mercado Livre
         # Isso garante que a página de produtos abra E a sua tag fique registrada no sistema de atribuição deles
-        link_ml = f"https://mercadolivre.com.br{termo_encoded}#jm=TARCFELL&utm_source=afiliado&utm_medium=telegram&utm_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+        link_ml = f"https://lista.mercadolivre.com.br/{termo_encoded}#jm=TARCFELL&utm_source=afiliado&utm_medium=telegram&utm_campaign={ID_AFILIADO_MERCADO_LIVRE}"
         
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
