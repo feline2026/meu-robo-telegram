@@ -45,12 +45,19 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         
-        # 1. Cria o termo de busca limpo para a URL
-        termo_clean = urllib.parse.quote(produto.strip())
-        link_busca_normal = f"https://lista.mercadolivre.com.br/{termo_clean}"
+        # 1. Cria o link de busca limpo e codificado para a web
+        termo_encoded = urllib.parse.quote(produto.strip())
+        link_busca_normal = f"https://lista.mercadolivre.com.br/{termo_encoded}"
         
-        # 2. Monta o redirecionador oficial de afiliados do grupo Mercado Livre (repare no domínio de cliques deles)
-        link_ml = f"https://mercadolivre.com.br{urllib.parse.quote(link_busca_normal)}&subId={ID_AFILIADO_MERCADO_LIVRE}"
+        # 2. Junta os parâmetros de afiliado usando um dicionário limpo
+        parametros = {
+            'url': link_busca_normal,
+            'subId': ID_AFILIADO_MERCADO_LIVRE
+        }
+        query_string = urllib.parse.urlencode(parametros)
+        
+        # 3. Monta o link final usando o redirecionador oficial do Mercado Livre
+        link_ml = f"https://mercadolivre.com.br?{query_string}"
         
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
@@ -63,6 +70,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             parse_mode="Markdown",
             reply_markup=structure_links
         )
+
 
 
 
