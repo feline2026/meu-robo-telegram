@@ -1,7 +1,19 @@
 import os
 import urllib.parse
+from threading import Thread
+from flask import Flask
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, MessageHandler, filters, ContextTypes
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Robô está online e ativo!"
+
+def run():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
 
 # SEU TOKEN CONFIGURADO COM SEGURANÇA NA RENDER
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -37,7 +49,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         produto_formatado = produto.strip().replace(" ", "-")
         termo_encoded = urllib.parse.quote(produto_formatado)
         
-        # LINK CORRIGIDO: Aponta diretamente para a lista do Mercado Livre com a barra correta
         link_ml = f"https://lista.mercadolivre.com.br/{termo_encoded}#jm=TARCFELL&utm_source=afiliado&utm_medium=telegram&utm_campaign={ID_AFILIADO_MERCADO_LIVRE}"
         
         botoes_links = [
@@ -59,11 +70,12 @@ def main():
     app_telegram.add_handler(CallbackQueryHandler(gerenciar_clique_botao))
     app_telegram.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
 
-    print("Bot de Afiliados Ativo e Rodando 24 Horas!")
+    print("Bot de Afiliados Ativo!")
     app_telegram.run_polling()
 
 if __name__ == "__main__":
+    flask_thread = Thread(target=run, daemon=True)
+    flask_thread.start()
     main()
-
 
 
