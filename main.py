@@ -14,7 +14,7 @@ def home():
 def run():
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
-
+Thread(target=run, daemon=True).start()
 # SEU TOKEN CONFIGURADO COM SEGURANÇA NA RENDER
 TOKEN = os.environ.get("TELEGRAM_TOKEN").strip()
 
