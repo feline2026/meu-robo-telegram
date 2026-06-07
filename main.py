@@ -16,7 +16,8 @@ def run():
     app.run(host='0.0.0.0', port=port)
 
 # SEU TOKEN CONFIGURADO COM SEGURANÇA NA RENDER
-TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TOKEN = os.environ.get("TELEGRAM_TOKEN").strip()
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     botoes = [
