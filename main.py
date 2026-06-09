@@ -45,19 +45,24 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         produto = update.message.text
         context.user_data['aguardando_busca'] = False
         
-        ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
-        
-        # Formata o termo substituindo espaços por traços para a URL ficar perfeita
-        produto_formatado = produto.strip().replace(" ", "-")
-        termo_encoded = urllib.parse.quote(produto_formatado)
-        
-        # URL CORRIGIDA: Sem caracteres que quebram o Telegram
+       ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+    ID_AFILIADO_SHOPEE = "18325271196"
+
+    # Formata o termo substituindo espaços por traços para a URL ficar perfeita
+    produto_formatado = produto.strip().replace(" ", "-")
+    termo_encoded = urllib.parse.quote(produto_formatado)
+
+    # URL CORRIGIDA: Sem caracteres que quebram o Telegram
         link_ml = f"https://lista.mercadolivre.com.br/{termo_encoded}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        
-        botoes_links = [
-            [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
-            [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
-        ]
+    link_shopee = f"https://lista.shopee.com.br/{termo_encoded}&sub_id={ID_AFILIADO_SHOPEE}"
+
+
+    botoes_links = [
+        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+        [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+    ]
+
         structure_links = InlineKeyboardMarkup(botoes_links)
         
         await update.message.reply_text(
