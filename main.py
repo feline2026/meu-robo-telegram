@@ -9,8 +9,9 @@ from telegram.ext import (
     filters
 )
 
-# coloque o seu token do telegram entre as aspas abaixo
-TOKEN = "8934530926:AAHCFf7cz4oEciUvXGHsKw4xxVSOnWKpc5W"
+import os
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
+
 
 
 
