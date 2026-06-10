@@ -31,13 +31,14 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         ID_AFILIADO_SHOPEE = "18325271196"
 
-        # Formatação correta dos termos de busca
+                # O .lower() transforma qualquer letra maiúscula em minúscula (corrige a busca da Shopee)
         termo_ml = urllib.parse.quote(produto.strip().replace(" ", "-"))
-        termo_shopee = urllib.parse.quote(produto.strip())
+        termo_shopee = urllib.parse.quote(produto.strip().lower())
+
 
         # Links estruturados com os IDs de afiliado
         link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+        link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
 
 
         botoes_links = [
