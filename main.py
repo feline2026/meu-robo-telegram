@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 
 # coloque o seu token do telegram entre as aspas abaixo
-TOKEN = "8934530926:AAHCFf7cz4oEciUvXGHsKw4xxVSOnWKpc5w"
+TOKEN = "8934530926:AAHCFf7cz4oEciUvXGHsKw4xxVSOnWKpc5W"
 
 
 
