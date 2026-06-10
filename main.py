@@ -23,7 +23,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
         # URLs CORRIGIDAS: Com as rotas de busca completas e seguras
         link_ml = f"https://lista.mercadolivre.com.br/{termo_encoded}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        link_shopee = f"https://shopee.com.br/search?keyword={termo_encoded}&utm_source=an_18325271196&utm_medium=affiliates"
+        link_shopee = f"https://shopee.com.br{termo_encoded}"
 
 
         botoes_links = [
