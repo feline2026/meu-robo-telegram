@@ -37,7 +37,8 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
         # Links estruturados com os IDs de afiliado
         link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        link_shopee = f"https://shopee.com.br/search?keyword={termo_shopee}&utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+        link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+
 
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
