@@ -10,7 +10,8 @@ from telegram.ext import (
 )
 
 # coloque o seu token do telegram entre as aspas abaixo
-TOKEN = "71829382:AAHjg..." 
+TOKEN = "8934530926:AAHCFf7cz4oEciUvXGHsKw4xxVSOnWKpc5w"
+
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
