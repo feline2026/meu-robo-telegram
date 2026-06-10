@@ -10,7 +10,8 @@ from telegram.ext import (
 )
 
 # coloque o seu token do telegram entre as aspas abaixo
-TOKEN = "SEU_TELEGRAM_TOKEN_AQUI"
+TOKEN = "71829382:AAHjg..." 
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
