@@ -48,7 +48,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         # Links estruturados com os IDs de afiliado (Amazon limpa para evitar erro de URL inválida)
         link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
         link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-        link_amazon = f"https://amazon.com.br{termo_amazon}"
+        link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
 
         # Lista completa contendo as 3 lojas juntas
         botoes_links = [
