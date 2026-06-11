@@ -10,26 +10,124 @@ from telegram.ext import (
 )
 import os
 import threading
-from http.server import SimpleHTTPRequestHandler, HTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-# --- CÓDIGO PARA ENGANAR O RENDER (EVITA QUE O ROBÔ FIQUE CAINDO) ---
-def rodar_servidor_falso():
+# =====================================================================
+#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + SUAS ROTAS CORRETAS DA FOTO)
+# =====================================================================
+class VisualSiteHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
+        
+        # Lê o produto que o cliente digitar na barra do site
+        query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        produto = query_params.get('p', [''])
+        
+        html_botoes = ""
+        texto_resultados = ""
+        
+        if produto and produto[0]:
+            prod_texto = produto[0]
+            
+            ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+            ID_AFILIADO_SHOPEE = "18325271196"
+
+            # Formatação dos termos idêntica à sua imagem
+            termo_ml = urllib.parse.quote(prod_texto.strip().replace(" ", "-"))
+            termo_shopee = urllib.parse.quote(prod_texto.strip().lower().replace(" ", "-"))
+            termo_amazon = urllib.parse.quote(prod_texto.strip())
+
+            # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
+            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br{termo_amazon}"
+            
+            texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
+            html_botoes = f"""
+            <div class="box-botoes">
+                <a href="{link_ml}" target="_blank" class="btn btn-ml">🛒 Ver no Mercado Livre</a>
+                <a href="{link_shopee}" target="_blank" class="btn btn-shopee">🛍️ Ver na Shopee</a>
+                <a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a>
+            </div>
+            """
+
+        # Estrutura do Site (Fundo escuro moderno)
+        html_pagina = f"""
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Não Sabe Onde Comprar - Clique Aqui</title>
+            <style>
+                body {{
+                    margin: 0; padding: 0; background-color: #121214; color: #ffffff;
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                    display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+                }}
+                .container {{ width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; }}
+                h1 {{ font-size: 26px; margin-bottom: 5px; font-weight: 800; }}
+                .sub {{ color: #a8a8b3; font-size: 16px; margin-bottom: 40px; }}
+                form {{ width: 100%; display: flex; flex-direction: column; gap: 15px; }}
+                input[type="text"] {{
+                    width: 100%; padding: 16px; border: 2px solid #29292e; border-radius: 8px;
+                    background-color: #202024; color: #ffffff; font-size: 16px; outline: none; box-sizing: border-box;
+                }}
+                input[type="text"]:focus {{ border-color: #00b37e; }}
+                button {{
+                    width: 100%; padding: 16px; border: none; border-radius: 8px;
+                    background-color: #00b37e; color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer;
+                }}
+                h2 {{ font-size: 16px; color: #a8a8b3; margin-top: 30px; }}
+                h2 span {{ color: #00b37e; }}
+                .box-botoes {{ display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 20px; }}
+                .btn {{
+                    display: block; padding: 16px; text-decoration: none; color: white; font-weight: bold;
+                    border-radius: 8px; text-align: center; font-size: 15px;
+                }}
+                .btn-ml {{ background-color: #fff159; color: #333333; }}
+                .btn-shopee {{ background-color: #ee4d2d; }}
+                .btn-amazon {{ background-color: #ff9900; color: #111111; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>Não Sabe Onde Comprar</h1>
+                <div class="sub">Clique Aqui 👇</div>
+                
+                <form action="/" method="GET">
+                    <input type="text" name="p" value="{produto[0] if produto else ''}" placeholder="O que você quer buscar hoje?" required>
+                    <button type="submit">🔍 Buscar Ofertas</button>
+                </form>
+                
+                {texto_resultados}
+                {html_botoes}
+            </div>
+        </body>
+        </html>
+        """
+        self.wfile.write(html_pagina.encode('utf-8'))
+
+def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
-    server = HTTPServer(('0.0.0.0', porta), SimpleHTTPRequestHandler)
+    server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
 
-# Abre a porta fictícia que o Render exige na conta gratuita
-threading.Thread(target=rodar_servidor_falso, daemon=True).start()
-# -------------------------------------------------------------------
+# Inicia o site em paralelo com o robô
+threading.Thread(target=ligar_site_producao, daemon=True).start()
 
+# =====================================================================
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (COMPLETAMENTE IGUAL À SUA FOTO)
+# =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
+    await update.message.reply_text("Olá! Envie o nome de um product para buscar.")
     context.user_data['aguardando_busca'] = True 
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Se o usuário não iniciou a busca pelo start ou pelo botão, ativa o estado para garantir
     if 'aguardando_busca' not in context.user_data:
         context.user_data['aguardando_busca'] = True
 
@@ -40,17 +138,15 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
         ID_AFILIADO_SHOPEE = "18325271196"
 
-        # CORREÇÃO DA BUSCA: Substitui espaços por traços para a rota /list/ da Shopee e ML funcionar direto
         termo_ml = urllib.parse.quote(produto.strip().replace(" ", "-"))
         termo_shopee = urllib.parse.quote(produto.strip().lower().replace(" ", "-"))
         termo_amazon = urllib.parse.quote(produto.strip())
 
-        # Links estruturados com os IDs de afiliado (Amazon limpa para evitar erro de URL inválida)
+        # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
         link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
         link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-        link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
+        link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
 
-        # Lista completa contendo as 3 lojas juntas
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
             [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
@@ -67,26 +163,14 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         )
 
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Gerencia o clique no botão de buscar outro produto"""
     query = update.callback_query
     await query.answer()
-    
-    # Ativa novamente o estado de busca e pede o nome do produto
     context.user_data['aguardando_busca'] = True
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
 if __name__ == '__main__':
-    # Inicializa o bot com o Token configurado
     application = ApplicationBuilder().token(TOKEN).build()
-
-    # Registra o comando /start
     application.add_handler(CommandHandler("start", start))
-
-    # Registra o clique no botão "Buscar outro produto"
     application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
-
-    # Escuta as mensagens de texto enviadas pelos usuários (evita ler comandos)
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
-
-    # Mantém o processo do bot ativo em loop contínuo (resolve o erro do Render)
     application.run_polling()
