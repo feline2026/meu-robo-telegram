@@ -37,7 +37,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             # Formatação dos termos idêntica à sua imagem
             termo_ml = urllib.parse.quote(prod_texto.strip().replace(" ", "-"))
             termo_shopee = urllib.parse.quote(prod_texto.strip().lower().replace(" ", "-"))
-            termo_amazon = produto.strip().replace(" ", "+")
+            termo_amazon = urllib.parse.quote(produto.strip())
 
 
             # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
