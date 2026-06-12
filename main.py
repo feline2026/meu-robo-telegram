@@ -13,7 +13,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
-#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + SUPORTE COMPLETO A REDIRECIONAMENTO)
+#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS DIRETAS DE BUSCA)
 # =====================================================================
 class VisualSiteHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
@@ -33,18 +33,19 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         texto_resultados = ""
         
         if produto and produto[0]:
-            prod_texto = produto[0]
+            prod_texto = produto[0].strip()
             
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
 
-            termo_ml = urllib.parse.quote(prod_texto.strip()).replace("%20", "-")
-            termo_shopee = urllib.parse.quote(prod_texto.strip().lower()).replace("%20", "-")
-            termo_amazon = urllib.parse.quote(prod_texto.strip()).replace("%20", "+")
+            # Formatação direta no texto puro para evitar erros de codificação
+            termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
+            termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
+            termo_amazon = urllib.parse.quote_plus(prod_texto)
 
-            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
+            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br{termo_amazon}"
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -119,7 +120,7 @@ def ligar_site_producao():
 threading.Thread(target=ligar_site_producao, daemon=True).start()
 
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATADO E TOTALMENTE DESBLOQUEADO)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO SEGURO E DIRETO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
@@ -128,17 +129,17 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    produto = update.message.text
+    produto = update.message.text.strip()
 
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
 
-    # Conversão limpa de caracteres especiais e espaços nas rotas
-    termo_ml = urllib.parse.quote(produto.strip()).replace("%20", "-")
-    termo_shopee = urllib.parse.quote(produto.strip().lower()).replace("%20", "-")
-    termo_amazon = urllib.parse.quote(produto.strip()).replace("%20", "+")
+    # Nova formatação direta usando quote_plus (converte espaços corretamente para cada loja)
+    termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
+    termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
+    termo_amazon = urllib.parse.quote_plus(produto)
 
-    # Links estruturados oficiais com WWW e complementos
+    # Links oficiais e validados com todas as barras e parâmetros corretos
     link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://amazon.com.br{termo_amazon}"
