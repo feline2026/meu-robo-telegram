@@ -38,9 +38,9 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_amazon = urllib.parse.quote(prod_texto.strip())
 
             # Links com as rotas oficiais e o WWW obrigatório na Amazon
-            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br/list{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
+            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br{termo_amazon}"
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -115,53 +115,51 @@ def ligar_site_producao():
 threading.Thread(target=ligar_site_producao, daemon=True).start()
 
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (ROTAS COM WWW CORRIGIDAS)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (SIMPLIFICADO E DIRETO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    # Limpa qualquer resquício de memória ao iniciar
+    context.user_data.clear()
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
-    context.user_data['aguardando_busca'] = True 
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if 'aguardando_busca' not in context.user_data:
-        context.user_data['aguardando_busca'] = True
+    produto = update.message.text
 
-    if context.user_data.get('aguardando_busca'):
-        produto = update.message.text
-        context.user_data['aguardando_busca'] = False
+    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+    ID_AFILIADO_SHOPEE = "18325271196"
 
-        ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
-        ID_AFILIADO_SHOPEE = "18325271196"
+    # Formatação limpa usando urllib.parse.quote para conversão estável de acentos e caracteres
+    termo_ml = urllib.parse.quote(produto.strip().replace(" ", "-"))
+    termo_shopee = urllib.parse.quote(produto.strip().lower().replace(" ", "-"))
+    termo_amazon = urllib.parse.quote(produto.strip())
 
-        termo_ml = urllib.parse.quote(produto.strip().replace(" ", "-"))
-        termo_shopee = urllib.parse.quote(produto.strip().lower().replace(" ", "-"))
-        termo_amazon = urllib.parse.quote(produto.strip())
+    # Links oficiais com o WWW travado no robô
+    link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+    link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+    link_amazon = f"https://amazon.com.br{termo_amazon}"
 
-        # links oficiais com o WWW travado no robô
-        link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-        link_amazon = f"https://amazon.com.br{termo_amazon}"
+    botoes_links = [
+        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+        [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
+        [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+    ]
 
-        botoes_links = [
-            [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
-            [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
-            [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
-            [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
-        ]
+    structure_links = InlineKeyboardMarkup(botoes_links)
 
-        structure_links = InlineKeyboardMarkup(botoes_links)
-
-        await update.message.reply_text(
-            f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
-            reply_markup=structure_links,
-            parse_mode="Markdown"
-        )
+    await update.message.reply_text(
+        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
+        reply_markup=structure_links,
+        parse_mode="Markdown"
+    )
 
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    context.user_data['aguardando_busca'] = True
+    # Limpa a memória para garantir que a próxima digitação venha do zero
+    context.user_data.clear()
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
 if __name__ == '__main__':
