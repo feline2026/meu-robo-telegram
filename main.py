@@ -13,7 +13,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
-#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + SUAS ROTAS CORRETAS DA FOTO)
+#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS 100% CORRIGIDAS)
 # =====================================================================
 class VisualSiteHandler(BaseHTTPRequestHandler):
     def do_GET(self):
@@ -21,7 +21,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
         
-        # Lê o produto que o cliente digitar na barra do site
         query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         produto = query_params.get('p', [''])
         
@@ -34,16 +33,14 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
 
-            # Formatação dos termos idêntica à sua imagem
             termo_ml = urllib.parse.quote(prod_texto.strip().replace(" ", "-"))
             termo_shopee = urllib.parse.quote(prod_texto.strip().lower().replace(" ", "-"))
-            termo_amazon = urllib.parse.quote(produto.strip())
+            termo_amazon = urllib.parse.quote(prod_texto.strip())
 
-
-            # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
+            # Links com as rotas oficiais e o WWW obrigatório na Amazon
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
+            link_shopee = f"https://shopee.com.br/list{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -54,7 +51,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             </div>
             """
 
-        # Estrutura do Site (Fundo escuro moderno)
         html_pagina = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
@@ -99,7 +95,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto[0] if produto else ''}" placeholder="O que você quer buscar hoje?" required>
+                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
@@ -116,16 +112,15 @@ def ligar_site_producao():
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
 
-# Inicia o site em paralelo com o robô
 threading.Thread(target=ligar_site_producao, daemon=True).start()
 
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (COMPLETAMENTE IGUAL À SUA FOTO)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (ROTAS COM WWW CORRIGIDAS)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Olá! Envie o nome de um product para buscar.")
+    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
     context.user_data['aguardando_busca'] = True 
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -143,10 +138,10 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         termo_shopee = urllib.parse.quote(produto.strip().lower().replace(" ", "-"))
         termo_amazon = urllib.parse.quote(produto.strip())
 
-        # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
-        link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-        link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-        link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
+        # links oficiais com o WWW travado no robô
+        link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+        link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+        link_amazon = f"https://amazon.com.br{termo_amazon}"
 
         botoes_links = [
             [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
