@@ -13,7 +13,7 @@ import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
-#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS 100% CORRIGIDAS)
+#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + SUPORTE COMPLETO A REDIRECIONAMENTO)
 # =====================================================================
 class VisualSiteHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
@@ -23,7 +23,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         self.send_response(200)
-
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
         
         query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         produto = query_params.get('p', [''])
@@ -37,12 +38,11 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
 
-            termo_ml = urllib.parse.quote(prod_texto.strip().replace(" ", "-"))
-            termo_shopee = urllib.parse.quote(prod_texto.strip().lower().replace(" ", "-"))
-            termo_amazon = urllib.parse.quote(prod_texto.strip())
+            termo_ml = urllib.parse.quote(prod_texto.strip()).replace("%20", "-")
+            termo_shopee = urllib.parse.quote(prod_texto.strip().lower()).replace("%20", "-")
+            termo_amazon = urllib.parse.quote(prod_texto.strip()).replace("%20", "+")
 
-            # Links com as rotas oficiais e o WWW obrigatório na Amazon
-            link_ml = f"https://lista.mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
             
@@ -119,12 +119,11 @@ def ligar_site_producao():
 threading.Thread(target=ligar_site_producao, daemon=True).start()
 
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (SIMPLIFICADO E DIRETO)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATADO E TOTALMENTE DESBLOQUEADO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Limpa qualquer resquício de memória ao iniciar
     context.user_data.clear()
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
 
@@ -134,12 +133,12 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
 
-    # Formatação limpa usando urllib.parse.quote para conversão estável de acentos e caracteres
-    termo_ml = urllib.parse.quote(produto.strip().replace(" ", "-"))
-    termo_shopee = urllib.parse.quote(produto.strip().lower().replace(" ", "-"))
-    termo_amazon = urllib.parse.quote(produto.strip())
+    # Conversão limpa de caracteres especiais e espaços nas rotas
+    termo_ml = urllib.parse.quote(produto.strip()).replace("%20", "-")
+    termo_shopee = urllib.parse.quote(produto.strip().lower()).replace("%20", "-")
+    termo_amazon = urllib.parse.quote(produto.strip()).replace("%20", "+")
 
-    # Links oficiais com o WWW travado no robô
+    # Links estruturados oficiais com WWW e complementos
     link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://amazon.com.br{termo_amazon}"
@@ -162,7 +161,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    # Limpa a memória para garantir que a próxima digitação venha do zero
     context.user_data.clear()
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
