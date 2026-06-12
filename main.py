@@ -38,9 +38,9 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_amazon = urllib.parse.quote(prod_texto.strip())
 
             # Links com as rotas oficiais e o WWW obrigatório na Amazon
-            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br{termo_amazon}"
+            link_ml = f"https://lista.mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
