@@ -37,7 +37,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             # Formatação dos termos idêntica à sua imagem
             termo_ml = urllib.parse.quote(prod_texto.strip().replace(" ", "-"))
             termo_shopee = urllib.parse.quote(prod_texto.strip().lower().replace(" ", "-"))
-            termo_amazon = urllib.parse.quote(prod_texto.strip())
+            termo_amazon = prod_texto.strip().replace(" ", "+")
+
 
             # 🛠️ TRAVADO: EXATAMENTE IGUAL À SUA IMAGEM CORRETA
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
