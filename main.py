@@ -16,10 +16,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 #  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS 100% CORRIGIDAS)
 # =====================================================================
 class VisualSiteHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
+    def do_HEAD(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
+
+    def do_GET(self):
+        self.send_response(200)
+
         
         query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         produto = query_params.get('p', [''])
