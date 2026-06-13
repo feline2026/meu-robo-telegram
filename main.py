@@ -45,7 +45,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
 
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
+            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -142,7 +142,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     # Links oficiais e validados com todas as barras e parâmetros corretos
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-    link_amazon = f"https://amazon.com.br/s?k{termo_amazon}"
+    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
