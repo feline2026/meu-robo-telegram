@@ -37,7 +37,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
-            ID_AFILIADO_AMAZON = "naosabeondeco-20"
+            ID_AFILIADO_AMAZON = "nsoc02-20"
 
             # Formatação direta no texto puro para evitar erros de codificação
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
@@ -135,7 +135,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
-    ID_AFILIADO_AMAZON = "naosabeondeco-20"
+    ID_AFILIADO_AMAZON = "nsoc02-20"
 
     # Nova formatação direta usando quote_plus (converte espaços corretamente para cada loja)
     termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
