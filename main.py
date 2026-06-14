@@ -37,6 +37,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
+            ID_AFILIADO_AMAZON = "naosabeondeco-20"
 
             # Formatação direta no texto puro para evitar erros de codificação
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
@@ -45,7 +46,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
 
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
+            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -133,6 +135,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
+    ID_AFILIADO_AMAZON = "naosabeondeco-20"
 
     # Nova formatação direta usando quote_plus (converte espaços corretamente para cada loja)
     termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
@@ -142,7 +145,8 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     # Links oficiais e validados com todas as barras e parâmetros corretos
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}"
+    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
