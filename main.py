@@ -61,13 +61,12 @@ html_botoes = f"""
     <strong>Aviso de Transparência:</strong> O <em>naosabeondecomprar</em> é um buscador independente e gratuito. Não realizamos vendas e não coletamos dados pessoais. Ao clicar nos botões acima (Mercado Livre, Amazon e Shopee), poderemos receber uma comissão caso uma compra seja realizada, sem custo adicional para você.
 </div>
 """
+html_pagina = f"""
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
 
-
-        html_pagina = f"""
-        <!DOCTYPE html>
-        <html lang="pt-BR">
-        <head>
-            <meta charset="UTF-8">
+<meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Não Sabe Onde Comprar - Clique Aqui</title>
             <style>
