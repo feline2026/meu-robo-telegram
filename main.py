@@ -116,7 +116,7 @@ html_pagina = f"""
         </body>
         </html>
         """
-        self.wfile.write(html_pagina.encode('utf-8'))
+self.wfile.write(html_pagina.encode('utf-8'))
 
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
