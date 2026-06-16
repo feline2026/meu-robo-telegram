@@ -50,17 +50,19 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
 
             
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
-            html_botoes = f"""<div class="box-botoes"><a href="{link_ml}" target="_blank" class="btn btn-ml">🛒 Ver no Mercado Livre</a><a href="{link_shopee}" target="_blank" class="btn btn-shopee">🛍️ Ver na Shopee</a><a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a></div><div style="margin-top: 30px; padding: 15px; text-align: center; font-size: 11px; color: #666; line-height: 1.4; border-top: 1px solid #eee; max-width: 400px; margin-left: auto; margin-right: auto;"><strong>Aviso de Transparência:</strong> O <em>naosabeondecomprar</em> é um buscador independente e gratuito. Não realizamos vendas e não coletamos dados pessoais. Ao clicar nos botões acima (Mercado Livre, Amazon e Shopee), poderemos receber uma comissão caso uma compra seja realizada, sem custo adicional para você.</div>"""
+            html_botoes = f"""
+            <div class="box-botoes">
+                <a href="{link_ml}" target="_blank" class="btn btn-ml">🛒 Ver no Mercado Livre</a>
+                <a href="{link_shopee}" target="_blank" class="btn btn-shopee">🛍️ Ver na Shopee</a>
+                <a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a>
+            </div>
+            """
 
-    html_botoes = f"""<div class="box-botoes"><a href="{link_ml}" target="_blank" class="btn btn-ml">🛒 Ver no Mercado Livre</a><a href="{link_shopee}" target="_blank" class="btn btn-shopee">🛍️ Ver na Shopee</a><a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a></div><div style="margin-top: 30px; padding: 15px; text-align: center; font-size: 11px; color: #666; line-height: 1.4; border-top: 1px solid #eee; max-width: 400px; margin-left: auto; margin-right: auto;"><strong>Aviso de Transparência:</strong> O <em>naosabeondecomprar</em> é um buscador independente e gratuito. Não realizamos vendas e não coletamos dados pessoais. Ao clicar nos botões acima (Mercado Livre, Amazon e Shopee), poderemos receber uma comissão caso uma compra seja realizada, sem custo adicional para você.</div>"""
-
-html_pagina = f"""
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-
-
-<meta charset="UTF-8">
+        html_pagina = f"""
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Não Sabe Onde Comprar - Clique Aqui</title>
             <style>
@@ -100,7 +102,7 @@ html_pagina = f"""
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{prod_texto}" required>
+                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
@@ -110,7 +112,7 @@ html_pagina = f"""
         </body>
         </html>
         """
-self.wfile.write(html_pagina.encode('utf-8'))
+        self.wfile.write(html_pagina.encode('utf-8'))
 
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
