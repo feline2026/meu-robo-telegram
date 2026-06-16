@@ -97,7 +97,7 @@ html_pagina = f"""
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required>
+                    <input type="text" name="p" value="{prod_texto}" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
