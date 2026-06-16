@@ -51,7 +51,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_shein = urllib.parse.quote_plus(prod_texto)
 
             # --- LINKS DAS LOJAS CORRIGIDOS ---
-            link_ml = f"https://lista/mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
             link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
