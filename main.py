@@ -32,6 +32,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
+        # Correção crucial: Voltando a verificar produto[0] como no seu código original
         if produto and produto[0]:
             prod_texto = produto[0].strip()
             
@@ -39,10 +40,10 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
             ID_AFILIADO_AMAZON = "nsoc02-20"
-            ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       # 🆕 ID Magalu
-            ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         # 🆕 ID Shein
+            ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
+            ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         
 
-            # Formatação direta no texto puro para evitar erros de codificação
+            # Formatação direta no texto puro (idêntico ao seu original que funcionava 100%)
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
             termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             termo_amazon = urllib.parse.quote_plus(prod_texto)
@@ -50,11 +51,11 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_shein = urllib.parse.quote_plus(prod_texto)
 
             # --- LINKS DAS LOJAS ---
-            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-            link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?subcategoria=all&partner_id={ID_AFILIADO_MAGALU}"
-            link_shein = f"https://shein.com{termo_shein}/?_ga={ID_AFILIADO_SHEIN}"
+            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+            link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
+            link_shein = f"https://shein.com{termo_shein}/?src_identifier=st%3D2%60sc%3D{termo_shein}%60tc%3D0%60oc%3D0%60ps%3D0%60jc%3D0&attr_ids=&sub_aff_id={ID_AFILIADO_SHEIN}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -148,8 +149,8 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
     ID_AFILIADO_AMAZON = "nsoc02-20"
-    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       # 🆕 ID Magalu
-    ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         # 🆕 ID Shein
+    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
+    ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         
 
     # Formatação usando quote_plus
     termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
@@ -159,11 +160,11 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_shein = urllib.parse.quote_plus(produto)
 
     # Links parametrizados
-    link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-    link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-    link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-    link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?subcategoria=all&partner_id={ID_AFILIADO_MAGALU}"
-    link_shein = f"https://shein.com{termo_shein}/?_ga={ID_AFILIADO_SHEIN}"
+    link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+    link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+    link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
+    link_shein = f"https://shein.com{termo_shein}/?src_identifier=st%3D2%60sc%3D{termo_shein}%60tc%3D0%60oc%3D0%60ps%3D0%60jc%3D0&attr_ids=&sub_aff_id={ID_AFILIADO_SHEIN}"
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
