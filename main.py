@@ -70,7 +70,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             """
 
         # ⬇️ COLE O NOVO BLOCO EXATAMENTE AQUI, SUBSTITUINDO O SEU ATÉ O FINAL DO do_GET ⬇️
-        html_pagina = f"""
+         html_pagina = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
@@ -99,7 +99,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 }}
                 button:hover {{ background-color: #009e6f; }}
                 
-                /* Grid de Lojas Indicativas */
                 .badge-container {{ display: flex; justify-content: center; gap: 8px; margin-top: 15px; flex-wrap: wrap; }}
                 .badge {{ font-size: 11px; padding: 5px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; color: #111; }}
                 .bg-ml {{ background: #fff159; }} .bg-shopee {{ background: #ee4d2d; color: #fff; }} .bg-amazon {{ background: #ff9900; }} .bg-magalu {{ background: #0086ff; color: #fff; }} .bg-shein {{ background: #fff; }}
@@ -118,7 +117,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 .btn-magalu {{ background-color: #0086ff; color: white; }}
                 .btn-shein {{ background-color: #000000; color: white; border: 1px solid #333; }}
                 
-                /* Rodapé de Transparência Fixo */
                 footer {{ width: 100%; padding: 20px; text-align: center; font-size: 13px; color: #6b7280; border-top: 1px solid #161b26; background: #0b0d14; box-sizing: border-box; }}
                 footer a {{ color: #00b37e; text-decoration: none; font-weight: 600; }}
                 footer a:hover {{ text-decoration: underline; }}
@@ -130,7 +128,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Pesquise uma vez e compare instantaneamente nas maiores lojas da internet de forma gratuita e sem cadastros.</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{prod_texto if 'prod_texto' in locals() else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
+                    <input type="text" name="p" value="{produto[0] if produto else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
                     <button type="submit">🔍 Buscar Ofertas</button>
                     
                     <div class="badge-container">
@@ -152,6 +150,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         </body>
         </html>
         """
+
         # ⬇️ LOGO ABAIXO DO BLOCO CONTINUA A LINHA ORIGINAL DO SEU ARQUIVO
         self.wfile.write(html_pagina.encode('utf-8'))
 
