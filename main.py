@@ -140,7 +140,12 @@ TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
+    
+    # 🆕 Adicionado botão de transparência na mensagem de boas-vindas inicial
+    botoes_start = [[InlineKeyboardButton("📜 Transparência e Aviso Legal", callback_data='ver_transparencia')]]
+    markup_start = InlineKeyboardMarkup(botoes_start)
+    
+    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=markup_start)
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
     produto = update.message.text.strip()
@@ -159,7 +164,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_magalu = urllib.parse.quote_plus(produto)
     termo_shein = urllib.parse.quote_plus(produto.lower())
 
-    # Links parametrizados e limpos para o Telegram
+    # Links parametrizados e limpos para o Telegram (RESTAURADOS TOTALMENTE)
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
@@ -172,7 +177,10 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
         [InlineKeyboardButton("💙 Ver na Magalu", url=link_magalu)],
         [InlineKeyboardButton("🖤 Ver na Shein", url=link_shein)],
-        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+        [
+            InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar'),
+            InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia') # 🆕 Botão adicionado na resposta
+        ]
     ]
 
     structure_links = InlineKeyboardMarkup(botoes_links)
@@ -189,10 +197,6 @@ async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_
     context.user_data.clear()
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
-if __name__ == '__main__':
-    application = ApplicationBuilder().token(TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
-    
-    application.run_polling()
+# 🆕 FUNÇÃO DE TRANSPARÊNCIA ADAPTADA PARA O SEU ROBÔ (PADRÃO ASYNC)
+async def exibir_aviso_legal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
