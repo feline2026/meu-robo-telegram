@@ -48,7 +48,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             termo_amazon = urllib.parse.quote_plus(prod_texto)
             termo_magalu = urllib.parse.quote_plus(prod_texto)
-            termo_shein = urllib.parse.quote_plus(prod_texto)
+            termo_shein = urllib.parse.quote_plus(prod_texto.lower())
 
             # --- LINKS DAS LOJAS CORRIGIDOS ---
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
@@ -157,7 +157,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
     termo_amazon = urllib.parse.quote_plus(produto)
     termo_magalu = urllib.parse.quote_plus(produto)
-    termo_shein = urllib.parse.quote_plus(produto)
+    termo_shein = urllib.parse.quote_plus(produto.lower())
 
     # Links parametrizados e limpos para o Telegram
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
