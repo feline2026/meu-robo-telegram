@@ -55,7 +55,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
             link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-            link_shein = f"https://shein.com{termo_shein}/?sub_aff_id={ID_AFILIADO_SHEIN}"
+            link_shein = f"https://shein.com{termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -164,7 +164,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
     link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-    link_shein = f"https://shein.com{termo_shein}/?sub_aff_id={ID_AFILIADO_SHEIN}"
+    link_shein = f"https://shein.com{termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
