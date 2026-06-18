@@ -10,6 +10,7 @@ from telegram.ext import (
 )
 import os
 import threading
+import asyncio
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
@@ -32,8 +33,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        if produto and produto:
-            prod_texto = produto.strip()
+        if produto and produto[0]:
+            prod_texto = produto[0].strip()
             
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
@@ -122,7 +123,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Pesquise uma vez e compare instantaneamente nas maiores lojas da internet de forma gratuita e sem cadastros.</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto if produto and produto else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
+                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
                     <button type="submit">🔍 Buscar Ofertas</button>
                     
                     <div class="badge-container">
@@ -151,10 +152,8 @@ def ligar_site_producao():
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
 
-threading.Thread(target=ligar_site_producao, daemon=True).start()
-
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO FLUIDO E PREVINIDO DE SPAÇO)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO SEGURO E CORRIGIDO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
@@ -168,4 +167,5 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_SHOPEE = "18325271196"
     ID_AFILIADO_AMAZON = "nsoc02-20"
-    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"  
+    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
+    ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         
