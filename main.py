@@ -32,7 +32,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        # RESTAURADO: Validação idêntica ao seu código original original que funcionava 100%
         if produto and produto[0]:
             prod_texto = produto[0].strip()
             
@@ -50,14 +49,13 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_magalu = urllib.parse.quote_plus(prod_texto)
             termo_shein = urllib.parse.quote_plus(prod_texto.lower())
 
-            # --- LINKS DAS LOJAS CORRIGIDOS ---
-            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            # --- LINKS DAS LOJAS ---
+            link_ml = f"https://lista/mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
             link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-            link_shein = f"https://shein.com/search?q={termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
+            link_shein = f"https://shein.com{termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
 
-             # --- SEU CÓDIGO ATUAL QUE JÁ FUNCIONA (LINHAS DE REFERÊNCIA) ---
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
             <div class="box-botoes">
@@ -69,8 +67,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             </div>
             """
 
-        # ⬇️ COLE O NOVO BLOCO EXATAMENTE AQUI, SUBSTITUINDO O SEU ATÉ O FINAL DO do_GET ⬇️
-                 html_pagina = f"""
+        html_pagina = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
@@ -128,7 +125,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Pesquise uma vez e compare instantaneamente nas maiores lojas da internet de forma gratuita e sem cadastros.</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto[0] if produto else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
+                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
                     <button type="submit">🔍 Buscar Ofertas</button>
                     
                     <div class="badge-container">
@@ -145,13 +142,12 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             </div>
             
             <footer>
-                Independentes e transparentes. Ferramenta gratuita útil à comunidade. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nEste site é um buscador independente e gratuito de ofertas. Não realizamos vendas diretas, não processamos pagamentos e não coletamos dados pessoais.\\n\\nAo clicar nos botões das lojas parceiras, podemos receber uma comissão caso uma compra seja realizada, sem nenhum custo adicional para você.')">Ler Termos de Transparência</a>
+                Independentes e transparentes. Ferramenta gratuita útil à comunidade. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nEste site é um buscador independente e gratuito de ofertas. Não realizamos vendas diretas, não processamos pagamentos e não coletamos dados pessoais.\\n\\nAo clicar nos botões das lojas parceiras, podemos receber uma comissão caso uma compra seja realizada, sem nenhum custo adicionou para você.')">Ler Termos de Transparência</a>
             </footer>
         </body>
         </html>
         """
         self.wfile.write(html_pagina.encode('utf-8'))
-
 
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
@@ -168,62 +164,9 @@ TOKEN = os.environ.get("TELEGRAM_TOKEN")
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
     
-    # 🆕 Adicionado botão de transparência na mensagem de boas-vindas inicial
     botoes_start = [[InlineKeyboardButton("📜 Transparência e Aviso Legal", callback_data='ver_transparencia')]]
     markup_start = InlineKeyboardMarkup(botoes_start)
     
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=markup_start)
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    produto = update.message.text.strip()
-
-    # --- CONFIGURAÇÃO DOS AFILIADOS NO BOT ---
-    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
-    ID_AFILIADO_SHOPEE = "18325271196"
-    ID_AFILIADO_AMAZON = "nsoc02-20"
-    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
-    ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         
-
-    # Formatação usando quote_plus
-    termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
-    termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
-    termo_amazon = urllib.parse.quote_plus(produto)
-    termo_magalu = urllib.parse.quote_plus(produto)
-    termo_shein = urllib.parse.quote_plus(produto.lower())
-
-    # Links parametrizados e limpos para o Telegram (RESTAURADOS TOTALMENTE)
-    link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-    link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-    link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-    link_shein = f"https://shein.com/search?q={termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
-
-    botoes_links = [
-        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
-        [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
-        [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
-        [InlineKeyboardButton("💙 Ver na Magalu", url=link_magalu)],
-        [InlineKeyboardButton("🖤 Ver na Shein", url=link_shein)],
-        [
-            InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar'),
-            InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia') # 🆕 Botão adicionado na resposta
-        ]
-    ]
-
-    structure_links = InlineKeyboardMarkup(botoes_links)
-
-    await update.message.reply_text(
-        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
-        reply_markup=structure_links,
-        parse_mode="Markdown"
-    )
-
-async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    await query.answer()
-    context.user_data.clear()
-    await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
-
-# 🆕 FUNÇÃO DE TRANSPARÊNCIA ADAPTADA PARA O SEU ROBÔ (PADRÃO ASYNC)
-async def exibir_aviso_legal(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
