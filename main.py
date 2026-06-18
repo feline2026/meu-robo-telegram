@@ -169,7 +169,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
     link_netshoes = f"https://netshoes.com.br{termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
 
-    botoes_links = [
+        botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
         [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
         [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
@@ -178,3 +178,5 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         [
             InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar'),
             InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia')
+        ]
+    ]
