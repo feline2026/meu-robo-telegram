@@ -32,24 +32,21 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        if produto and produto[0]:
-            prod_texto = produto[0].strip()
+        if produto and produto:
+            prod_texto = produto.strip()
             
-            # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
             ID_AFILIADO_SHEIN = "SEU_ID_SHEIN"         
 
-            # Formatação direta no texto puro para evitar erros de codificação
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
             termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             termo_amazon = urllib.parse.quote_plus(prod_texto)
             termo_magalu = urllib.parse.quote_plus(prod_texto)
             termo_shein = urllib.parse.quote_plus(prod_texto.lower())
 
-            # --- LINKS DAS LOJAS ---
             link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
@@ -125,7 +122,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Pesquise uma vez e compare instantaneamente nas maiores lojas da internet de forma gratuita e sem cadastros.</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
+                    <input type="text" name="p" value="{produto if produto and produto else ''}" placeholder="O que você quer buscar hoje?" required autocomplete="off">
                     <button type="submit">🔍 Buscar Ofertas</button>
                     
                     <div class="badge-container">
@@ -149,29 +146,26 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         """
         self.wfile.write(html_pagina.encode('utf-8'))
 
-
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
 
-
 threading.Thread(target=ligar_site_producao, daemon=True).start()
 
-
 # =====================================================================
-#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO SEGURO E DIRETO)
+#  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO FLUIDO E PREVINIDO DE SPAÇO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    
     botoes_start = [[InlineKeyboardButton("📜 Transparência e Aviso Legal", callback_data='ver_transparencia')]]
-    markup_start = InlineKeyboardMarkup(botoes_start)
-    
-    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=markup_start)
-
+    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=InlineKeyboardMarkup(botoes_start))
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    produto = update.message.text.strip()
+    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+    ID_AFILIADO_SHOPEE = "18325271196"
+    ID_AFILIADO_AMAZON = "nsoc02-20"
+    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"  
