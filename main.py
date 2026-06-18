@@ -70,7 +70,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             """
 
         # ⬇️ COLE O NOVO BLOCO EXATAMENTE AQUI, SUBSTITUINDO O SEU ATÉ O FINAL DO do_GET ⬇️
-         html_pagina = f"""
+                 html_pagina = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
@@ -150,11 +150,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         </body>
         </html>
         """
-
-        # ⬇️ LOGO ABAIXO DO BLOCO CONTINUA A LINHA ORIGINAL DO SEU ARQUIVO
         self.wfile.write(html_pagina.encode('utf-8'))
 
-        self.wfile.write(html_pagina.encode('utf-8'))
 
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
