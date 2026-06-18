@@ -50,10 +50,10 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_shein = urllib.parse.quote_plus(prod_texto.lower())
 
             # --- LINKS DAS LOJAS ---
-            link_ml = f"https://lista/mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-            link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-            link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-            link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
+            link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+            link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+            link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+            link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
             link_shein = f"https://shein.com{termo_shein}&sub_aff_id={ID_AFILIADO_SHEIN}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
@@ -142,24 +142,28 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             </div>
             
             <footer>
-                Independentes e transparentes. Ferramenta gratuita útil à comunidade. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nEste site é um buscador independente e gratuito de ofertas. Não realizamos vendas diretas, não processamos pagamentos e não coletamos dados pessoais.\\n\\nAo clicar nos botões das lojas parceiras, podemos receber uma comissão caso uma compra seja realizada, sem nenhum custo adicionou para você.')">Ler Termos de Transparência</a>
+                Independentes e transparentes. Ferramenta gratuita útil à comunidade. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nEste site é um buscador independente e gratuito de ofertas. Não realizamos vendas diretas, não processamos pagamentos e não coletamos dados pessoais.\\n\\nAo clicar nos botões das lojas parceiras, podemos receber uma comissão caso uma compra seja realizada, sem nenhum custo adicional para você.')">Ler Termos de Transparência</a>
             </footer>
         </body>
         </html>
         """
         self.wfile.write(html_pagina.encode('utf-8'))
 
+
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
 
+
 threading.Thread(target=ligar_site_producao, daemon=True).start()
+
 
 # =====================================================================
 #  🤖 CÓDIGO DO ROBÔ DO TELEGRAM (FORMATO SEGURO E DIRETO)
 # =====================================================================
 TOKEN = os.environ.get("TELEGRAM_TOKEN")
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
@@ -168,5 +172,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     markup_start = InlineKeyboardMarkup(botoes_start)
     
     await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=markup_start)
+
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
