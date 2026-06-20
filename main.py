@@ -11,6 +11,7 @@ from telegram.ext import (
 import os
 import threading
 import asyncio
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
 #  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS DIRETAS DE BUSCA)
@@ -49,7 +50,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_magalu = urllib.parse.quote_plus(prod_texto)
             termo_netshoes = urllib.parse.quote_plus(prod_texto.lower())
 
-            # --- LINKS DAS LOJAS ---
+            # --- LINKS DAS LOJAS CORRIGIDOS ---
             link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
@@ -178,7 +179,3 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia')
         ]
     ]
-
-    # FIX: Fechamento correto de todos os parênteses e chaves da linha 183 do log
-    await update.message.reply_text(
-        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
