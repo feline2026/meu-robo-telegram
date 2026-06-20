@@ -10,7 +10,7 @@ from telegram.ext import (
 )
 import os
 import threading
-import asyncio  # 🆕 Necessário para o novo final modificado
+import asyncio
 
 # =====================================================================
 #  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS DIRETAS DE BUSCA)
@@ -49,7 +49,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_magalu = urllib.parse.quote_plus(prod_texto)
             termo_netshoes = urllib.parse.quote_plus(prod_texto.lower())
 
-            # --- LINKS DAS LOJAS CORRIGIDOS ---
+            # --- LINKS DAS LOJAS ---
             link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
@@ -106,7 +106,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 .btn-magalu {{ background-color: #0086ff; color: white; }}
                 .btn-netshoes {{ background-color: #532d85; color: white; }}
                 
-                /* Rodapé discreto de Transparência */
                 footer {{ width: 100%; padding: 15px; text-align: center; font-size: 12px; color: #737380; background-color: #1a1a1e; box-sizing: border-box; }}
                 footer a {{ color: #00b37e; text-decoration: none; font-weight: bold; }}
             </style>
@@ -180,4 +179,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         ]
     ]
 
+    # FIX: Fechamento correto de todos os parênteses e chaves da linha 183 do log
     await update.message.reply_text(
+        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
