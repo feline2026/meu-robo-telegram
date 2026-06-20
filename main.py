@@ -10,8 +10,7 @@ from telegram.ext import (
 )
 import os
 import threading
-import asyncio
-from http.server import BaseHTTPRequestHandler, HTTPServer
+import asyncio  # 🆕 Necessário para o novo final modificado
 
 # =====================================================================
 #  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS DIRETAS DE BUSCA)
@@ -33,29 +32,29 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        if produto and produto[0]:
-            prod_texto = produto[0].strip()
+        if produto and produto:
+            prod_texto = produto.strip()
             
             # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_SHOPEE = "18325271196"
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
-            ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES" # 🆕 Substituído Shein por Netshoes
+            ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES"
 
             # Formatação direta no texto puro para evitar erros de codificação
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
             termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             termo_amazon = urllib.parse.quote_plus(prod_texto)
             termo_magalu = urllib.parse.quote_plus(prod_texto)
-            termo_netshoes = urllib.parse.quote_plus(prod_texto.lower()) # 🆕 Termo Netshoes
+            termo_netshoes = urllib.parse.quote_plus(prod_texto.lower())
 
             # --- LINKS DAS LOJAS CORRIGIDOS ---
             link_ml = f"https://mercadolivre.com.br{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
             link_magalu = f"https://magazineluiza.com.br{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-            link_netshoes = f"https://netshoes.com.br{termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}" # 🆕 Rota Netshoes
+            link_netshoes = f"https://netshoes.com.br{termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -105,9 +104,9 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 .btn-shopee {{ background-color: #ee4d2d; }}
                 .btn-amazon {{ background-color: #ff9900; color: #111111; }}
                 .btn-magalu {{ background-color: #0086ff; color: white; }}
-                .btn-netshoes {{ background-color: #532d85; color: white; }} /* 🆕 Roxo Netshoes */
+                .btn-netshoes {{ background-color: #532d85; color: white; }}
                 
-                /* 🆕 Rodapé discreto de Transparência */
+                /* Rodapé discreto de Transparência */
                 footer {{ width: 100%; padding: 15px; text-align: center; font-size: 12px; color: #737380; background-color: #1a1a1e; box-sizing: border-box; }}
                 footer a {{ color: #00b37e; text-decoration: none; font-weight: bold; }}
             </style>
@@ -118,7 +117,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required>
+                    <input type="text" name="p" value="{produto if produto and produto else ''}" placeholder="O que você quer buscar hoje?" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
@@ -180,3 +179,5 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia')
         ]
     ]
+
+    await update.message.reply_text(
