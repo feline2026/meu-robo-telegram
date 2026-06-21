@@ -182,4 +182,49 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
     texto_bot = f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:"
     teclado_bot = InlineKeyboardMarkup(botoes_links)
+    await update.message.reply_text(
+        text=texto_bot,
+        reply_markup=teclado_bot,
+        parse_mode="Markdown"
+    )
+
+async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.answer()
+    context.user_data.clear()
+    await update.callback_query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
+
+async def exibir_aviso_legal(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.answer()
+    texto_aviso = (
+        "*Aviso de Transparência:*\n\n"
+        "O _naosabeondecomprar_ é um buscador independente e gratuito de ofertas. "
+        "Não realizamos vendas diretas, não processamos pagamentos e não coletamos dados pessoais "
+        "dos usuários em nosso sistema.\n\n"
+        "Ao pesquisar e clicar nos botões que direcionam para os nossos marketplaces parceiros "
+        "(*Mercado Livre, Amazon, Shopee, Magalu e Netshoes*), nós poderemos receber uma comissão caso uma compra "
+        "seja realizada, sem nenhum custo adicional para você. Os preços, estoques, fretes e "
+        "condições de entrega são de responsabilidade exclusiva de cada plataforma parceira."
+    )
+    await update.callback_query.message.reply_text(texto_aviso, parse_mode="Markdown")
+
+async def main():
+    # 1. Liga o servidor do site PRIMEIRO para o Render não dar Timeout de Porta
+    threading.Thread(target=ligar_site_producao, daemon=True).start()
+    
+    # 2. Configura e liga o Robô do Telegram logo em seguida
+    application = ApplicationBuilder().token(TOKEN).build()
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
+    application.add_handler(CallbackQueryHandler(exibir_aviso_legal, pattern='^ver_transparencia$'))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
+    
+    async with application:
+        await application.initialize()
+        await application.start()
+        await application.updater.start_polling()
+        while True:
+            await asyncio.sleep(3600)
+
+if __name__ == '__main__':
+    asyncio.run(main())
 
