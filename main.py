@@ -117,7 +117,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto if produto and produto else ''}" placeholder="O que você quer buscar hoje?" required>
+                    
+                    <input type="text" name="p" value="{prod_texto if 'prod_texto' in locals() else ''}" placeholder="O que você quer buscar hoje?" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
