@@ -180,5 +180,4 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
         ]
     ]
 
-    await update.message.reply_text(
-        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
+ await update.message.reply_text(f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:", reply_markup=InlineKeyboardMarkup(botoes_links), parse_mode="Markdown")
