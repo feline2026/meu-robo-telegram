@@ -14,7 +14,7 @@ import asyncio
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 # =====================================================================
-#  ⚙️ CÓDIGO DO SITE (VISUAL PREMIUM + ROTAS DIRETAS DE BUSCA)
+#  ⚙️ CÓDIGO DO SITE (VISUAL SEGURO + ROTAS DIRETAS DE BUSCA)
 # =====================================================================
 class VisualSiteHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
@@ -33,8 +33,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        if produto and produto:
-            prod_texto = produto.strip()
+        if produto and produto[0]:
+            prod_texto = produto[0].strip()
             
             # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
@@ -117,7 +117,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">Clique Aqui 👇</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{produto if produto and produto else ''}" placeholder="O que você quer buscar hoje?" required>
+                    <input type="text" name="p" value="{produto[0] if produto and produto[0] else ''}" placeholder="O que você quer buscar hoje?" required>
                     <button type="submit">🔍 Buscar Ofertas</button>
                 </form>
                 
@@ -179,3 +179,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
             InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia')
         ]
     ]
+
+    await update.message.reply_text(
+        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
