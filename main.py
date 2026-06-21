@@ -33,8 +33,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
         
-        if produto and produto:
-            prod_texto = produto.strip()
+        if produto and produto[0]:
+            prod_texto = produto[0].strip()
             
             # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
