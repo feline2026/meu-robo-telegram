@@ -145,48 +145,60 @@ TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    botoes_start = [[InlineKeyboardButton("📜 Transparência e Aviso Legal", callback_data='ver_transparencia')]]
-    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.", reply_markup=InlineKeyboardMarkup(botoes_start))
+    await update.message.reply_text("Olá! Envie o nome de um produto para buscar.")
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
     produto = update.message.text.strip()
-    termo_busca = urllib.parse.quote_plus(produto)
-    
-    # URL do site hospedado no Render
-    url_site = f"https://onrender.com{termo_busca}"
-    
-    botoes = [[InlineKeyboardButton("🔍 Ver Lojas Disponíveis", url=url_site)]]
+
+    # --- CONFIGURAÇÃO DOS AFILIADOS NO BOT ---
+    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+    ID_AFILIADO_SHOPEE = "18325271196"
+    ID_AFILIADO_AMAZON = "nsoc02-20"
+    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
+    ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES"         
+
+    # Formatação usando quote_plus (Corrigido: adicionado termo_netshoes)
+    termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
+    termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
+    termo_amazon = urllib.parse.quote_plus(produto)
+    termo_magalu = urllib.parse.quote_plus(produto)
+    termo_netshoes = urllib.parse.quote(produto)
+
+    # Links parametrizados corrigidos com as rotas exatas de busca (/list/, /s?k=, /busca/)
+    link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
+    link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
+    link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+    link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
+    link_netshoes = f"https://netshoes.com.br/s?q={termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
+
+    botoes_links = [
+        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+        [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
+        [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
+        [InlineKeyboardButton("💙 Ver na Magalu", url=link_magalu)],
+        [InlineKeyboardButton("👟 Ver na Netshoes", url=link_netshoes)],
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+    ]
+
+    structure_links = InlineKeyboardMarkup(botoes_links)
+
     await update.message.reply_text(
-        f"Resultados prontos para: *{produto}*\nClique abaixo para escolher a loja desejada!",
-        reply_markup=InlineKeyboardMarkup(botoes),
+        f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
+        reply_markup=structure_links,
         parse_mode="Markdown"
     )
 
-async def lidar_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    if query.data == 'ver_transparencia':
-        aviso = (
-            "Aviso de Transparência:\n\n"
-            "O buscador é independente. Não realizamos vendas nem processamos pagamentos.\n"
-            "Podemos receber comissão das lojas parceiras caso uma compra aconteça."
-        )
-        await query.message.reply_text(aviso)
+    context.user_data.clear()
+    await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
-def principal():
-    if TOKEN:
-        app = ApplicationBuilder().token(TOKEN).build()
-        app.add_handler(CommandHandler("start", start))
-        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
-        app.add_handler(CallbackQueryHandler(lidar_botoes))
-        
-        print("🤖 Robô do Telegram iniciado...")
-        app.run_polling()
-    else:
-        print("⚠️ Erro: TELEGRAM_TOKEN não configurado no Render.")
+if __name__ == '__main__':
+    application = ApplicationBuilder().token(TOKEN).build()
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
+    
+    application.run_polling()
 
-if __name__ == "__main__":
-    # Inicia o site em segundo plano
-    threading.Thread(target=ligar_site_producao, daemon=True).start()
-    # Inicia o Telegram principal
-    principal()
