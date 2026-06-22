@@ -150,34 +150,43 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
     produto = update.message.text.strip()
-    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
-    ID_AFILIADO_SHOPEE = "18325271196"
-    ID_AFILIADO_AMAZON = "nsoc02-20"
-    ID_AFILIADO_MAGALU = "SEU_ID_MAGALU"       
-    ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES"   
+    termo_busca = urllib.parse.quote_plus(produto)
+    
+    # URL do site hospedado no Render
+    url_site = f"https://onrender.com{termo_busca}"
+    
+    botoes = [[InlineKeyboardButton("🔍 Ver Lojas Disponíveis", url=url_site)]]
+    await update.message.reply_text(
+        f"Resultados prontos para: *{produto}*\nClique abaixo para escolher a loja desejada!",
+        reply_markup=InlineKeyboardMarkup(botoes),
+        parse_mode="Markdown"
+    )
 
-    termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
-    termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
-    termo_amazon = urllib.parse.quote_plus(produto)
-    termo_magalu = urllib.parse.quote_plus(produto)
-    termo_netshoes = urllib.parse.quote_plus(produto.lower())
+async def lidar_botoes(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    if query.data == 'ver_transparencia':
+        aviso = (
+            "Aviso de Transparência:\n\n"
+            "O buscador é independente. Não realizamos vendas nem processamos pagamentos.\n"
+            "Podemos receber comissão das lojas parceiras caso uma compra aconteça."
+        )
+        await query.message.reply_text(aviso)
 
-    link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
-    link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
-    link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-    link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}/?partner_id={ID_AFILIADO_MAGALU}"
-    link_netshoes = f"https://netshoes.com.br{termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
+def principal():
+    if TOKEN:
+        app = ApplicationBuilder().token(TOKEN).build()
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
+        app.add_handler(CallbackQueryHandler(lidar_botoes))
+        
+        print("🤖 Robô do Telegram iniciado...")
+        app.run_polling()
+    else:
+        print("⚠️ Erro: TELEGRAM_TOKEN não configurado no Render.")
 
-    botoes_links = [
-        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
-        [InlineKeyboardButton("🛍️ Ver na Shopee", url=link_shopee)],
-        [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
-        [InlineKeyboardButton("💙 Ver na Magalu", url=link_magalu)],
-        [InlineKeyboardButton("👟 Ver na Netshoes", url=link_netshoes)],
-        [
-            InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar'),
-            InlineKeyboardButton("📜 Transparência", callback_data='ver_transparencia')
-        ]
-    ]
-
-    texto_bot = f"Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:"
+if __name__ == "__main__":
+    # Inicia o site em segundo plano
+    threading.Thread(target=ligar_site_producao, daemon=True).start()
+    # Inicia o Telegram principal
+    principal()
