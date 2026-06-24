@@ -54,7 +54,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-            link_magalu = f"https://www.magazineluiza.com.br/busca/{termo_magalu}&partner_id={ID_AFILIADO_MAGALU}"
+            link_magalu = f"https://www.magazineluiza.com.br/busca/?q={termo_magalu}&partner_id={ID_AFILIADO_MAGALU}"
             link_netshoes = f"https://www.netshoes.com.br/busca?q={termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
@@ -168,7 +168,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}#jm={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-    link_magalu = f"https://magazineluiza.com.br/busca/{termo_magalu}&partner_id={ID_AFILIADO_MAGALU}"
+    link_magalu = f"https://magazineluiza.com.br/busca/?q={termo_magalu}&partner_id={ID_AFILIADO_MAGALU}"
     link_netshoes = f"https://www.netshoes.com.br/busca?q={termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
 
     botoes_links = [
