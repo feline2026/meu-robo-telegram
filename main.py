@@ -41,21 +41,21 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_SHOPEE = "18325271196"
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "naosabeonde"       
-            ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES"
+            ID_AFILIADO_ALIEXPRESS = "naosabeonde"
 
             # Formatação de strings limpas para as buscas
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
             termo_shopee = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             termo_amazon = urllib.parse.quote_plus(prod_texto)
             termo_magalu = urllib.parse.quote_plus(prod_texto)
-            termo_netshoes = urllib.parse.quote_plus(prod_texto)
+            termo_aliexpress = urllib.parse.quote_plus(prod_texto)
 
             # --- LINKS DAS LOJAS ---
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
             link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
             link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
             link_magalu = f"https://www.magazineluiza.com.br/busca/{termo_magalu}?partner_id={ID_AFILIADO_MAGALU}"
-            link_netshoes = f"https://www.netshoes.com.br/busca?q={termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
+            link_aliexpress = f"https://aliexpress.com{termo_aliexpress}.html?SearchText={termo_aliexpress}&af={ID_AFILIADO_ALIEXPRESS}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f"""
@@ -155,21 +155,21 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_SHOPEE = "18325271196"
     ID_AFILIADO_AMAZON = "nsoc02-20"
     ID_AFILIADO_MAGALU = "naosabeonde"       
-    ID_AFILIADO_NETSHOES = "SEU_ID_NETSHOES"         
+    ID_AFILIADO_ALIEXPRESS = "naosabeonde"         
 
     # Formatação usando quote_plus (Corrigido: adicionado termo_netshoes)
     termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
     termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
     termo_amazon = urllib.parse.quote_plus(produto)
     termo_magalu = urllib.parse.quote_plus(produto)
-    termo_netshoes = urllib.parse.quote(produto)
+    termo_aliexpress = urllib.parse.quote_plus(prod_texto)
 
     # Links parametrizados corrigidos com as rotas exatas de busca (/list/, /s?k=, /busca/)
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     link_shopee = f"https://shopee.com.br/list/{termo_shopee}?utm_campaign=-&utm_content={ID_AFILIADO_SHOPEE}"
     link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
     link_magalu = f"https://www.magazineluiza.com.br/busca/{termo_magalu}?partner_id={ID_AFILIADO_MAGALU}"
-    link_netshoes = f"https://www.netshoes.com.br/busca?q={termo_netshoes}&utm_source=afiliados&utm_campaign={ID_AFILIADO_NETSHOES}"
+    link_aliexpress = f"https://aliexpress.com{termo_aliexpress}.html?SearchText={termo_aliexpress}&af={ID_AFILIADO_ALIEXPRESS}"
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
