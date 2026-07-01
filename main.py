@@ -64,7 +64,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <a href="{link_shopee}" target="_blank" class="btn btn-shopee">🛍️ Ver na Shopee</a>
                 <a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a>
                 <a href="{link_magalu}" target="_blank" class="btn btn-magalu">💙 Ver na Magalu</a>
-                <a href="{link_netshoes}" target="_blank" class="btn btn-netshoes">👟 Ver na Netshoes</a>
+                <a href="{link_aliexpress}" target="_blank" class="btn btn-aliexpress" style="background-color: #FF4747; color: white;">Ver no AliExpress</a>
             </div>
             """
 
