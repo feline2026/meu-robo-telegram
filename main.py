@@ -41,7 +41,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_SHOPEE = "18325271196"
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "naosabeonde"       
-            ID_AFILIADO_ALIEXPRESS = "naosabeonde"
+            ID_AFILIADO_ALIEXPRESS = "naosabeondecomprar"
 
             # Formatação de strings limpas para as buscas
             termo_ml = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
@@ -155,7 +155,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_SHOPEE = "18325271196"
     ID_AFILIADO_AMAZON = "nsoc02-20"
     ID_AFILIADO_MAGALU = "naosabeonde"       
-    ID_AFILIADO_ALIEXPRESS = "naosabeonde"         
+    ID_AFILIADO_ALIEXPRESS = "naosabeondecomprar"         
 
     # Formatação usando quote_plus (Corrigido: adicionado termo_netshoes)
     termo_ml = urllib.parse.quote_plus(produto.replace(" ", "-"))
