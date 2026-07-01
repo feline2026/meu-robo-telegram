@@ -162,7 +162,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_shopee = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
     termo_amazon = urllib.parse.quote_plus(produto)
     termo_magalu = urllib.parse.quote_plus(produto)
-    termo_aliexpress = urllib.parse.quote_plus(texto_mensagem)
+    termo_aliexpress = urllib.parse.quote_plus(produto)
 
     # Links parametrizados corrigidos com as rotas exatas de busca (/list/, /s?k=, /busca/)
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
