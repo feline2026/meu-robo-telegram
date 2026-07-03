@@ -72,6 +72,26 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
+            <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Não Sabe Onde Comprar",
+  "alternateName": "Buscador de Ofertas Integrado tf",
+  "url": "https://onrender.com",
+  "applicationCategory": "ShoppingApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires HTML5 support",
+  "description": "Buscador inteligente e automatizado de ofertas em tempo real. Compara preços instantaneamente e encontra cupons validados no Mercado Livre, Shopee, Amazon, Magalu e AliExpress.",
+  "offers": {
+    "@type": "Offer",
+    "price": "0.00",
+    "priceCurrency": "BRL"
+  },
+  "featureList": "Comparador de preços automático, busca integrada multiloja, redirecionamento seguro com tracking tf, integração direta com robô do Telegram"
+}
+</script>
+
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>Não Sabe Onde Comprar - Clique Aqui</title>
