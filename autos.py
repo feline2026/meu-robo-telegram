@@ -72,8 +72,8 @@ def processar_busca_veiculo(message):
 
 if __name__ == "__main__":
     import threading
-    # Remove qualquer conexão travada ou duplicada antes de iniciar
     bot.remove_webhook()
-    threading.Thread(target=lambda: bot.infinity_polling(timeout=20, long_polling_timeout=10, skip_pending_updates=True)).start()
+    threading.Thread(target=lambda: bot.infinity_polling(timeout=10, none_stop=True)).start()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+
 
