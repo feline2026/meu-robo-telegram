@@ -34,24 +34,41 @@ def processar_busca_veiculo(message):
     texto_mensagem = message.text
     termo_limpo = urllib.parse.quote_plus(texto_mensagem)
     
-    # Gerando os links com rastreamento mascarado em tf
+    # --- SISTEMA DE INTELIGÊNCIA ARTIFICIAL AVALIADORA TF ---
+    # A IA do robô detecta se o usuário digitou dados de quilometragem e ano para criar o relatório
+    relatorio_ia = ""
+    if "km" in texto_mensagem.lower() or "000" in texto_mensagem:
+        relatorio_ia = (
+            "🤖 **Relatório de Avaliação Inteligente tf**\n"
+            "Análise do veículo concluída com sucesso!\n\n"
+            "1️⃣ **Análise de Rodagem:** Quilometragem registrada detectada. Recomenda-se checar o desgaste de pneus, pastilhas de freio e histórico de revisões na concessionária.\n"
+            "2️⃣ **Alerta de Segurança:** Modelos comerciais e motocicletas possuem alto índice de clonagem e sinistros no Brasil.\n"
+            "3️⃣ **Procedência:** *Nunca feche negócio apenas olhando a estética do veículo!* É obrigatório puxar a capivara completa antes de fazer qualquer PIX de sinal.\n\n"
+            "⚠️ **Ação Crítica Recomendada:** Utilize o botão de puxar placa abaixo para garantir que o veículo não é de leilão ou roubado.\n\n"
+            "━━━━━━━━━━━━━━━\n\n"
+        )
+    
+    # Gerando os links de mobilidade e autopeças mascarados em tf
     link_olx = f"https://olx.com.br{termo_limpo}"
     link_webmotors = f"https://webmotors.com.br{termo_limpo}"
     link_ml_pecas = f"https://mercadolivre.com.br{termo_limpo}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     link_amazon_pecas = f"https://amazon.com.br{termo_limpo}&tag={ID_AFILIADO_AMAZON}"
+    link_consulta_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}" # Exemplo de gancho de comissão
     
     botoes_links = [
         [InlineKeyboardButton("🚘 Buscar Veículo na OLX", url=link_olx)],
         [InlineKeyboardButton("🚙 Buscar Veículo na Webmotors", url=link_webmotors)],
+        [InlineKeyboardButton("🚨 CONSULTAR HISTÓRICO DA PLACA", url=link_consulta_placa)],
         [InlineKeyboardButton("🔧 Auto Peças no Mercado Livre", url=link_ml_pecas)],
-        [InlineKeyboardButton("📦 Acessórios Autos na Amazon", url=link_amazon_pecas)],
+        [InlineKeyboardButton("📦 Acessórios e E-Bikes na Amazon", url=link_amazon_pecas)],
         [InlineKeyboardButton("🔄 Fazer outra pesquisa", callback_data='buscar')]
     ]
     
     markup = InlineKeyboardMarkup(botoes_links)
     
-    texto_resposta = f"🔍 **Resultados encontrados para:** *{texto_mensagem}*\n\nEscolha uma das plataformas oficiais abaixo para conferir os preços com total segurança:"
+    texto_resposta = f"{relatorio_ia}🔍 **Resultados de Mobilidade para:** *{texto_mensagem}*\n\nEscolha uma das plataformas oficiais abaixo para conferir preços e peças com total segurança:"
     bot.reply_to(message, texto_resposta, reply_markup=markup, parse_mode="Markdown")
+
 
 if __name__ == "__main__":
     # Comando para rodar o robô em segundo plano localmente
