@@ -53,7 +53,8 @@ def processar_busca_veiculo(message):
     link_webmotors = f"https://webmotors.com.br{termo_limpo}"
     link_ml_pecas = f"https://mercadolivre.com.br{termo_limpo}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     link_amazon_pecas = f"https://amazon.com.br{termo_limpo}&tag={ID_AFILIADO_AMAZON}"
-    link_consulta_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}" # Exemplo de gancho de comissão
+    link_consulta_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+
     
     botoes_links = [
         [InlineKeyboardButton("🚘 Buscar Veículo na OLX", url=link_olx)],
