@@ -32,12 +32,13 @@ def enviar_boas_vindas(message):
 @bot.message_handler(func=lambda message: True)
 def processar_busca_veiculo(message):
     texto_mensagem = message.text
-    termo_limpo = urllib.parse.quote_plus(texto_mensagem)
+    # Converte o texto para letras minúsculas para o robô nunca falhar a leitura
+    texto_minusculo = texto_mensagem.lower()
+    termo_limpo = urllib.parse.quote_plus(texto_minusculo)
     
     # --- SISTEMA DE INTELIGÊNCIA ARTIFICIAL AVALIADORA TF ---
-    # A IA do robô detecta se o usuário digitou dados de quilometragem e ano para criar o relatório
     relatorio_ia = ""
-    if "km" in texto_mensagem.lower() or "000" in texto_mensagem:
+    if "km" in texto_minusculo or "000" in texto_minusculo:
         relatorio_ia = (
             "🤖 **Relatório de Avaliação Inteligente tf**\n"
             "Análise do veículo concluída com sucesso!\n\n"
@@ -47,6 +48,7 @@ def processar_busca_veiculo(message):
             "⚠️ **Ação Crítica Recomendada:** Utilize o botão de puxar placa abaixo para garantir que o veículo não é de leilão ou roubado.\n\n"
             "━━━━━━━━━━━━━━━\n\n"
         )
+
     
     # Gerando os links de mobilidade e autopeças mascarados em tf
     link_olx = f"https://olx.com.br{termo_limpo}"
