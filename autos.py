@@ -32,7 +32,7 @@ def enviar_boas_vindas(message):
 @bot.message_handler(func=lambda message: True)
 def processar_busca_veiculo(message):
     texto_mensagem = message.text
-    # Converte o texto para letras minúsculas para o robô nunca falhar a leitura
+    # Transforma o texto em minúsculo para a IA nunca falhar
     texto_minusculo = texto_mensagem.lower()
     termo_limpo = urllib.parse.quote_plus(texto_minusculo)
     
@@ -48,6 +48,7 @@ def processar_busca_veiculo(message):
             "⚠️ **Ação Crítica Recomendada:** Utilize o botão de puxar placa abaixo para garantir que o veículo não é de leilão ou roubado.\n\n"
             "━━━━━━━━━━━━━━━\n\n"
         )
+
 
     
     # Gerando os links de mobilidade e autopeças mascarados em tf
