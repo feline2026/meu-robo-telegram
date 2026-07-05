@@ -197,7 +197,8 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
     structure_links = InlineKeyboardMarkup(botoes_links)
     
-    await update.message.reply_text(
+    await update.message.reply_text(texto_resposta, reply_markup=structure_links, parse_mode="Markdown")
+
         f"{relatorio_ia}Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
         reply_markup=structure_links,
         parse_mode="Markdown"
