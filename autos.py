@@ -177,9 +177,29 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_ml = urllib.parse.quote_plus(produto)
     termo_amazon = urllib.parse.quote_plus(produto)
 
-    # Rota parametrizada idêntica à do projeto 1 com os domínios completos corretos
-    link_seu_site = f"https://onrender.com{termo_site}"
+    # # Links parametrizados corrigidos com as rotas exatas de busca (/list/, /s?k-, /busca/)
+    link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+    link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
     link_olx = f"https://olx.com.br{termo_olx}"
     link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
     link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-    link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+    link_seu_site = f"https://onrender.com{termo_site}"
+
+    botoes_links = [
+        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+        [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
+        [InlineKeyboardButton("🚘 Ver na OLX", url=link_olx)],
+        [InlineKeyboardButton("🚙 Ver na Webmotors", url=link_webmotors)],
+        [InlineKeyboardButton("🚨 Consultar Placa (10% OFF)", url=link_placa)],
+        [InlineKeyboardButton("🌐 Ver no Site Visual tf", url=link_seu_site)],
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+    ]
+
+    structure_links = InlineKeyboardMarkup(botoes_links)
+
+    await update.message.reply_text(
+        f"{relatorio_ia}Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
+        reply_markup=structure_links,
+        parse_mode="Markdown"
+    )
+
