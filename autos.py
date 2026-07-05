@@ -41,17 +41,17 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "tf"
 
-            # Formatação de strings limpas baseada na sua foto
-            termo_olx = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
-            termo_webmotors = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
+            # Formatação direta e limpa igual à do seu projeto 1
+            termo_olx = urllib.parse.quote_plus(prod_texto)
+            termo_webmotors = urllib.parse.quote_plus(prod_texto)
             termo_ml = urllib.parse.quote_plus(prod_texto)
             termo_amazon = urllib.parse.quote_plus(prod_texto)
 
-            # --- LINKS COMPLETOS DAS LOJAS AUTOMOTIVAS ---
+            # Links oficiais completos das plataformas
             link_olx = f"https://olx.com.br{termo_olx}"
             link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
             link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-            link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+            link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
@@ -172,17 +172,15 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     ID_AFILIADO_MAGALU = "tf"
 
     termo_site = urllib.parse.quote_plus(produto)
-    termo_olx = urllib.parse.quote_plus(produto.replace(" ", "-"))
-    termo_webmotors = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
-    termo_ml = urllib.parse.quote_plus(produto)
-    termo_amazon = urllib.parse.quote_plus(produto)
+    termo_olx = urllib.parse.quote_plus(produto)
+    termo_webmotors = urllib.parse.quote_plus(produto)
 
-    # # Links parametrizados corrigidos com as rotas exatas de busca (/list/, /s?k-, /busca/)
-    link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+    # Rota raiz do site novo atualizada com o "s"
+    link_seu_site = f"https://onrender.com{termo_site}"
     link_olx = f"https://olx.com.br{termo_olx}"
     link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
     link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+    link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     link_seu_site = f"https://onrender.com{termo_site}"
 
     botoes_links = [
