@@ -147,11 +147,11 @@ def ligar_site_producao():
 TOKEN = "8645090278:AAGSdrnx9dh4i4s7FFfkM8yU60CI-mUab10"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    context.user_data.clear() # Limpeza idêntica à sua linha 167 da foto
-    await update.message.reply_text("Olá! Envie o nome de um produto para buscar: ")
+    context.user_data.clear()
+    await update.message.reply_text("🏎️ **StockNegócio ativo!**\n\nEnvie o nome de um veículo ou peça para buscar:")
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    produto = update.message.text.strip() # Strip igualzinho à linha 171 da sua foto
+    produto = update.message.text.strip()
     texto_minusculo = produto.lower()
 
     # --- SISTEMA DE INTELIGÊNCIA ARTIFICIAL AVALIADORA TF ---
@@ -174,32 +174,35 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     termo_site = urllib.parse.quote_plus(produto)
     termo_olx = urllib.parse.quote_plus(produto)
     termo_webmotors = urllib.parse.quote_plus(produto)
+    termo_ml = urllib.parse.quote_plus(produto)
+    termo_amazon = urllib.parse.quote_plus(produto)
 
-    # Rota raiz do site novo atualizada com o "s"
+    # Rotas parametrizadas limpas e corrigidas de ponta a ponta
     link_seu_site = f"https://onrender.com{termo_site}"
     link_olx = f"https://olx.com.br{termo_olx}"
     link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
     link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_seu_site = f"https://onrender.com{termo_site}"
+    link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
     botoes_links = [
-        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)],
+        [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)], 
         [InlineKeyboardButton("📦 Ver na Amazon", url=link_amazon)],
         [InlineKeyboardButton("🚘 Ver na OLX", url=link_olx)],
         [InlineKeyboardButton("🚙 Ver na Webmotors", url=link_webmotors)],
         [InlineKeyboardButton("🚨 Consultar Placa (10% OFF)", url=link_placa)],
         [InlineKeyboardButton("🌐 Ver no Site Visual tf", url=link_seu_site)],
-        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='recriar_busca')]
     ]
 
     structure_links = InlineKeyboardMarkup(botoes_links)
-
+    
     await update.message.reply_text(
         f"{relatorio_ia}Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:",
         reply_markup=structure_links,
         parse_mode="Markdown"
     )
+
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
@@ -207,11 +210,11 @@ async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
 if __name__ == '__main__':
-    # ADICIONE APENAS ESTA LINHA ABAIXO (Ela liga o site junto com o Telegram):
     threading.Thread(target=ligar_site_producao, daemon=True).start()
 
     application = ApplicationBuilder().token(TOKEN).build()
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
+    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^recriar_busca$'))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
     application.run_polling()
+
