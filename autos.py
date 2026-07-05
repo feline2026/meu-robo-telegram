@@ -62,7 +62,7 @@ def processar_busca_veiculo(message):
     link_olx = f"https://olx.com.br{termo_url}"
     link_webmotors = f"https://webmotors.com.br{termo_url}"
     link_ml_pecas = f"https://lista,mercadolivre.com.br/{termo_url}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_amazon_pecas = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+    link_amazon_pecas = f"https://amazon.com.br/s?k={termo_url}&tag={ID_AFILIADO_AMAZON}"
     link_consulta_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
     
     botoes_links = [
