@@ -144,7 +144,7 @@ def ligar_site_producao():
 # =========================================================================
 # 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
 # =========================================================================
-TOKEN = "8645090278:AAGSdrnx9dh4i4s7FFfkM8yU60CI-mUab10"
+TOKEN = "8645090278:AAG7WbkUNdEhkiG51yt0HYQSEQ_esorYABE"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
