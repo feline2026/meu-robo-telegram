@@ -51,14 +51,22 @@ def processar_busca_veiculo(message):
 
     
     # Gerando os links de mobilidade e autopeças mascarados em tf
-    link_olx = f"https://olx.com.br{termo_limpo}"
-    link_webmotors = f"https://webmotors.com.br{termo_limpo}"
-    link_ml_pecas = f"https://mercadolivre.com.br{termo_limpo}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_amazon_pecas = f"https://amazon.com.br{termo_limpo}&tag={ID_AFILIADO_AMAZON}"
+    # Termo formatado para links comuns na web
+    termo_url = urllib.parse.quote_plus(texto_mensagem)
+    
+    # 🔗 LINK DO SEU NOVO SITE VISUAL DO STOCKNEGÓCIO NO RENDER
+    # Passa a busca do cliente direto para a sua página web automatizada
+    link_seu_site = f"https://onrender.com{termo_url}"
+    
+    # Links de mobilidade e autopeças corrigidos com as barras oficiais
+    link_olx = f"https://olx.com.br{termo_url}"
+    link_webmotors = f"https://webmotors.com.br{termo_url}"
+    link_ml_pecas = f"https://lista,mercadolivre.com.br/{termo_url}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+    link_amazon_pecas = f"https://amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
     link_consulta_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-
     
     botoes_links = [
+        [InlineKeyboardButton("🌐 VER NO SITE VISUAL", url=link_seu_site)], # Botão igual ao primeiro projeto!
         [InlineKeyboardButton("🚘 Buscar Veículo na OLX", url=link_olx)],
         [InlineKeyboardButton("🚙 Buscar Veículo na Webmotors", url=link_webmotors)],
         [InlineKeyboardButton("🚨 CONSULTAR HISTÓRICO DA PLACA", url=link_consulta_placa)],
@@ -66,6 +74,7 @@ def processar_busca_veiculo(message):
         [InlineKeyboardButton("📦 Acessórios e E-Bikes na Amazon", url=link_amazon_pecas)],
         [InlineKeyboardButton("🔄 Fazer outra pesquisa", callback_data='buscar')]
     ]
+
     
     markup = InlineKeyboardMarkup(botoes_links)
     
