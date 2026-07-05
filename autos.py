@@ -1,125 +1,159 @@
-import os
 import urllib.parse
-from flask import Flask, request, render_template_string
-import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import (
+    ApplicationBuilder,
+    CommandHandler,
+    MessageHandler,
+    CallbackQueryHandler,
+    ContextTypes,
+    filters
+)
+import os
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
-# --- INSTANCIAÇÃO DO SERVIDOR WEB E DO ROBÔ ---
-app = Flask(__name__)
-TOKEN_TELEGRAM = "8645090278:AAGSdrnx9dh4i4s7FFfkM8yU60CI-mUab10"
-bot = telebot.TeleBot(TOKEN_TELEGRAM)
+# =========================================================================
+# 🌐 CÓDIGO DO SITE (VISUAL PREMIUM ESPELHADO DO PROJETO 1)
+# =========================================================================
+class VisualSiteHandler(BaseHTTPRequestHandler):
+    def do_HEAD(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
 
-# # --- CONFIGURAÇÃO DOS AFILIADOS NO BOT --- (Apenas uma vez no topo!)
-ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
-ID_AFILIADO_AMAZON = "nsoc02-20"
-ID_AFILIADO_MAGALU = "tf"
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header('Content-type', 'text/html; charset=utf-8')
+        self.end_headers()
 
-# # Bloco de Formatação e Links Unificado no Topo (Estrutura única!)
-def mapear_todos_os_links(produto):
-    termo_olx = urllib.parse.quote_plus(produto)
-    termo_webmotors = urllib.parse.quote_plus(produto)
-    termo_ml = urllib.parse.quote_plus(produto)
-    termo_amazon = urllib.parse.quote_plus(produto)
-    termo_site = urllib.parse.quote_plus(produto)
-    
-    link_seu_site = f"https://onrender.com{termo_site}"
-    link_olx = f"https://olx.com.br{termo_olx}"
-    link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
-    link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-    link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
-    
-    return link_seu_site, link_olx, link_webmotors, link_placa, link_ml, link_amazon
+        query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        produto = query_params.get('p', [''])
 
-# --- DESIGN DO SITE VISUAL AUTOMOTIVO (HTML/CSS + GEO) ---
-HTML_PAGINA = """
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <script type="application/ld+json">
-    {{
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "StockNegócio",
-      "alternateName": "Buscador de Mobilidade Inteligente tf",
-      "url": "https://onrender.com",
-      "applicationCategory": "ShoppingApplication",
-      "operatingSystem": "All",
-      "browserRequirements": "Requires HTML5 support",
-      "description": "Buscador inteligente automotivo. Compara veículos e autopeças na OLX, Webmotors, Mercado Livre e Amazon com rastreamento seguro.",
-      "offers": {{
-        "@type": "Offer",
-        "price": "0.00",
-        "priceCurrency": "BRL"
-      }}
-    }}
-    </script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StockNegócio - Pesquisa Automotiva tf</title>
-    <style>
-        body {{ font-family: 'Segoe UI', Arial, sans-serif; background-color: #121212; color: #ffffff; text-align: center; padding: 20px; margin: 0; }}
-        .container {{ max-width: 500px; margin: 0 auto; background: #1e1e1e; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }}
-        h1 {{ color: #ff9900; font-size: 24px; margin-bottom: 10px; }}
-        p {{ color: #aaaaaa; font-size: 14px; margin-bottom: 25px; }}
-        .termo {{ font-weight: bold; color: #ffffff; background: #333333; padding: 5px 10px; border-radius: 5px; }}
-        .btn {{ display: block; width: 100%; max-width: 100%; box-sizing: border-box; margin: 12px 0; padding: 15px; text-decoration: none; color: white; font-weight: bold; border-radius: 8px; font-size: 15px; transition: transform 0.2s; text-align: center; }}
-        .btn:hover {{ transform: scale(1.02); }}
-        .olx {{ background-color: #6E0AD6; }}
-        .webmotors {{ background-color: #E31C23; }}
-        .placa {{ background-color: #00A859; }}
-        .ml {{ background-color: #FFF159; color: #333333; }}
-        .amazon {{ background-color: #FF9900; color: #111111; }}
-        .telegram {{ background-color: #0088cc; }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🏎️ StockNegócio</h1>
-        <p>Resultados prontos para: <span class="termo">{{ termo }}</span></p>
-        
-        <a href="{{ link_olx }}" target="_blank" class="btn olx">🚘 Ver Veículo na OLX</a>
-        <a href="{{ link_webmotors }}" target="_blank" class="btn webmotors">🚙 Ver Veículo na Webmotors</a>
-        <a href="{{ link_placa }}" target="_blank" class="btn placa">🚨 CONSULTAR HISTÓRICO DA PLACA (10% OFF)</a>
-        <a href="{{ link_ml }}" target="_blank" class="btn ml">🔧 Auto Peças no Mercado Livre</a>
-        <a href="{{ link_amazon }}" target="_blank" class="btn amazon">📦 Acessórios e E-Bikes na Amazon</a>
-        <a href="https://t.me" target="_blank" class="btn telegram">💬 Abrir no Robô do Telegram</a>
-    </div>
-</body>
-</html>
-"""
+        html_botoes = ""
+        texto_resultados = ""
 
-@app.route('/')
-def home_inicial():
-    return "<h1>StockNegócio - Buscador Automotivo Online e Ativo!</h1>"
+        # Lógica idêntica de extração por lista da sua foto
+        if produto and produto[0]:
+            prod_texto = produto[0].strip()
+            
+            # --- CONFIGURAÇÃO DOS AFILIADOS ---
+            ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+            ID_AFILIADO_AMAZON = "nsoc02-20"
+            ID_AFILIADO_MAGALU = "tf"
 
-@app.route('/busca')
-def abrir_site_visual():
-    produto = request.args.get('q', '')
-    
-    # Puxa as variáveis prontas direto da estrutura única do topo
-    link_seu_site, link_olx, link_webmotors, link_placa, link_ml, link_amazon = mapear_todos_os_links(produto)
-    
-    return render_template_string(
-        HTML_PAGINA, termo=produto, link_olx=link_olx, link_webmotors=link_webmotors,
-        link_ml=link_ml, link_amazon=link_amazon, link_placa=link_placa
-    )
+            # Formatação de strings limpas baseada na sua foto
+            termo_olx = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
+            termo_webmotors = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
+            termo_ml = urllib.parse.quote_plus(prod_texto)
+            termo_amazon = urllib.parse.quote_plus(prod_texto)
 
-# --- FLUXO DO ROBÔ DO TELEGRAM ---
-@bot.message_handler(commands=['start', 'help'])
-def enviar_boas_vindas(message):
-    texto_boas_vindas = (
-        "🏎️ **Bem-vindo ao StockNegócio!**\n\n"
-        "O seu buscador inteligente de Mobilidade, Carros, Motos e Autopeças.\n"
-        "Digite o modelo de um veículo (ex: *Civic 2020*) ou uma peça/acessório para buscar!"
-    )
-    bot.reply_to(message, texto_boas_vindas, parse_mode="Markdown")
+            # --- LINKS COMPLETOS DAS LOJAS AUTOMOTIVAS ---
+            link_olx = f"https://olx.com.br{termo_olx}"
+            link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
+            link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+            link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+            link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
-@bot.message_handler(func=lambda message: True)
-def processar_busca_veiculo(message):
-    produto = message.text
+            texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
+            
+            html_botoes = f"""
+            <div class="box-botoes">
+                <a href="{link_olx}" target="_blank" class="btn" style="background-color: #6E0AD6; color: white;">🚘 Ver na OLX</a>
+                <a href="{link_webmotors}" target="_blank" class="btn" style="background-color: #E31C23; color: white;">🚙 Ver na Webmotors</a>
+                <a href="{link_placa}" target="_blank" class="btn" style="background-color: #00A859; color: white;">🚨 Consultar Placa (10% OFF)</a>
+                <a href="{link_ml}" target="_blank" class="btn btn-ml">🔧 Ver no Mercado Livre</a>
+                <a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a>
+            </div>
+            """
+            prod_val = prod_texto
+        else:
+            texto_resultados = "<h2>StockNegócio - Buscador Automotivo Online e Ativo!</h2>"
+            prod_val = ""
+
+        # Montagem do HTML estruturado idêntico ao seu projeto 1
+        html_content = f"""
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>StockNegócio - Clique Aqui</title>
+            <style>
+                body {{
+                    margin: 0; padding: 0; background-color: #121212; color: #ffffff;
+                    font-family: "Segoe UI", Arial, sans-serif;
+                    display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh;
+                }}
+                .container {{
+                    width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; margin: 0 auto;
+                }}
+                h1 {{ font-size: 26px; margin-bottom: 5px; font-weight: 800; color: #ffffff; }}
+                .sub {{ color: #a8a8b3; font-size: 16px; margin-bottom: 40px; }}
+                form {{ width: 100%; display: flex; flex-direction: column; gap: 15px; }}
+                input[type="text"] {{
+                    width: 100%; padding: 16px; border: 2px solid #29292e; border-radius: 8px;
+                    background-color: #202024; color: #ffffff; font-size: 16px; outline: none; box-sizing: border-box;
+                }}
+                input[type="text"]:focus {{ border-color: #00b37e; }}
+                button[type="submit"] {{
+                    width: 100%; padding: 16px; border: none; border-radius: 8px;
+                    background-color: #00b37e; color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer;
+                    margin-top: 5px;
+                }}
+                .box-botoes {{
+                    display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 24px;
+                }}
+                .btn {{
+                    display: block; width: 100%; padding: 16px; border: none; border-radius: 8px;
+                    text-decoration: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box;
+                    transition: transform 0.2s;
+                }}
+                .btn:hover {{ transform: scale(1.02); }}
+                .btn-ml {{ background-color: #FFF159; color: #333333; }}
+                .btn-amazon {{ background-color: #FF9900; color: #111111; }}
+                .telegram {{ background-color: #00b37e; color: white; margin-top: 20px; }}
+                footer {{ width: 100%; padding: 15px; text-align: center; font-size: 12px; color: #737380; background-color: #1a1a1e; box-sizing: border-box; }}
+                footer a {{ color: #00b37e; text-decoration: none; font-weight: bold; }}
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🏎️ StockNegócio</h1>
+                <div class="sub">{texto_resultados}</div>
+                
+                <form action="/" method="GET">
+                    <input type="text" name="p" value="{prod_val}" placeholder="O que você quer buscar?">
+                    <button type="submit">Buscar Ofertas</button>
+                </form>
+                
+                {html_botoes}
+                <a href="https://t.me" target="_blank" class="btn telegram">💬 Abrir no Robô do Telegram</a>
+            </div>
+            <footer>Buscador gratuito e independente de utilidade pública. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nNão coletamos dados pessoais.')">Aviso de Transparência</a></footer>
+        </body>
+        </html>
+        """
+        self.wfile.write(html_content.encode('utf-8'))
+
+# Porta 10000 idêntica à do projeto 1
+def ligar_site_producao():
+    porta = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
+    server.serve_forever()
+
+# =========================================================================
+# 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
+# =========================================================================
+TOKEN = "8645090278:AAGSdrnx9dh4i4s7FFfkM8yU60CI-mUab10"
+
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    context.user_data.clear() # Limpeza idêntica à sua linha 167 da foto
+    await update.message.reply_text("Olá! Envie o nome de um produto para buscar: ")
+
+async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    produto = update.message.text.strip() # Strip igualzinho à linha 171 da sua foto
     texto_minusculo = produto.lower()
-    
+
     # --- SISTEMA DE INTELIGÊNCIA ARTIFICIAL AVALIADORA TF ---
     relatorio_ia = ""
     if "km" in texto_minusculo or "000" in texto_minusculo:
@@ -132,25 +166,20 @@ def processar_busca_veiculo(message):
             "⚠️ **Ação Crítica Recomendada:** Utilize o botão de puxar placa abaixo para garantir que o veículo não é de leilão ou roubado.\n\n"
             "━━━━━━━━━━━━━━━\n\n"
         )
-    
-    # Puxa exatamente as mesmas variáveis da estrutura única do topo
-    link_seu_site, link_olx, link_webmotors, link_placa, link_ml, link_amazon = mapear_todos_os_links(produto)
-    
-    botoes_links = [
-        [InlineKeyboardButton("🌐 VER NO SITE VISUAL tf", url=link_seu_site)],
-        [InlineKeyboardButton("🚘 Buscar Veículo na OLX", url=link_olx)],
-        [InlineKeyboardButton("🚙 Buscar Veículo na Webmotors", url=link_webmotors)],
-        [InlineKeyboardButton("🚨 CONSULTAR HISTÓRICO DA PLACA", url=link_placa)],
-        [InlineKeyboardButton("🔧 Auto Peças no Mercado Livre", url=link_ml)],
-        [InlineKeyboardButton("📦 Acessórios e E-Bikes na Amazon", url=link_amazon)]
-    ]
-    
-    markup = InlineKeyboardMarkup(botoes_links)
-    texto_resposta = f"{relatorio_ia}🔍 **Resultados de Mobilidade para:** *{produto}*\n\nEscolha uma das opções oficiais abaixo para navegar com total segurança:"
-    bot.reply_to(message, texto_resposta, reply_markup=markup, parse_mode="Markdown")
 
-if __name__ == "__main__":
-    import threading
-    bot.remove_webhook()
-    threading.Thread(target=lambda: bot.infinity_polling(timeout=10, none_stop=True)).start()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
+    ID_AFILIADO_AMAZON = "nsoc02-20"
+    ID_AFILIADO_MAGALU = "tf"
+
+    termo_site = urllib.parse.quote_plus(produto)
+    termo_olx = urllib.parse.quote_plus(produto.replace(" ", "-"))
+    termo_webmotors = urllib.parse.quote_plus(produto.lower().replace(" ", "-"))
+    termo_ml = urllib.parse.quote_plus(produto)
+    termo_amazon = urllib.parse.quote_plus(produto)
+
+    # Rota parametrizada idêntica à do projeto 1 com os domínios completos corretos
+    link_seu_site = f"https://onrender.com{termo_site}"
+    link_olx = f"https://olx.com.br{termo_olx}"
+    link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
+    link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+    link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
