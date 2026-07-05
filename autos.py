@@ -210,11 +210,14 @@ async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
 if __name__ == '__main__':
+    # Thread do site idêntica à do projeto 1
     threading.Thread(target=ligar_site_producao, daemon=True).start()
 
+    # Bloco final de ativação com escuta prioritária para textos das lojas
     application = ApplicationBuilder().token(TOKEN).build()
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^recriar_busca$'))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^buscar$'))
+    
     application.run_polling()
 
