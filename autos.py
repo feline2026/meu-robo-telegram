@@ -116,7 +116,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                     display: block; padding: 16px; text-decoration: none; color: white; font-weight: bold;
                     border-radius: 8px; text-align: center; font-size: 15px;
                 }}
-                .btn:hover {{ transform: scale(1.02); }}
                 .btn-ml {{ background-color: #FFF159; color: #333333; }}
                 .btn-amazon {{ background-color: #FF9900; color: #111111; }}
                 
