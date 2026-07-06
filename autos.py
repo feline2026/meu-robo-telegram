@@ -147,10 +147,12 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         self.wfile.write(html_content.encode('utf-8'))
 
 
+# Porta dinâmica automática que impede o site de desligar ou dar erro de porta em uso
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
     server.serve_forever()
+
 
 # =========================================================================
 # 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
