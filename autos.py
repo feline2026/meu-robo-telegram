@@ -65,16 +65,30 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <a href="{link_amazon}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a>
             </div>
             """
-            prod_val = prod_texto
-        else:
-            texto_resultados = "<h2>StockNegócio - Buscador Automotivo Online e Ativo!</h2>"
-            prod_val = ""
 
-        # Montagem do HTML estruturado idêntico ao seu projeto 1
-        html_content = f"""
+        html_pagina = f"""
         <!DOCTYPE html>
         <html lang="pt-BR">
         <head>
+            <script type="application/ld+json">
+    {{
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "stocknegocios",
+      "alternateName": "Buscador de Ofertas Integrado tf",
+      "url": "https://onrender.com",
+      "applicationCategory": "ShoppingApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires HTML5 support",
+      "description": "Buscador inteligente e automatizado de ofertas em tempo real. Compara preços instantaneamente e encontra cupons validados no olx, webmotors, olhonocarro, Mercadolivre e amazon.",
+      "offers": {{
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "BRL"
+      }},
+      "featureList": "Comparador de preços automático, busca integrada multiloja, redirecionamento seguro com tracking tf, integração direta com robô do Telegram"
+    }}
+    </script>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>StockNegócio - Clique Aqui</title>
