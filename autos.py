@@ -144,7 +144,7 @@ def ligar_site_producao():
 # =========================================================================
 # 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
 # =========================================================================
-TOKEN = ""TELEGRAM_TOKEN""
+TOKEN = os.environ.get("TELEGRAM_TOKEN")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
