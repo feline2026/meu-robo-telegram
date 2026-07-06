@@ -32,7 +32,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         html_botoes = ""
         texto_resultados = ""
 
-        # Lógica idêntica de extração por lista da sua foto
+        # Correção da lista: Extrai a busca sem os colchetes ['']
         if produto and produto[0]:
             prod_texto = produto[0].strip()
             
@@ -47,7 +47,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_ml = urllib.parse.quote_plus(prod_texto)
             termo_amazon = urllib.parse.quote_plus(prod_texto)
 
-            # Links oficiais completos das plataformas
+            # --- LINKS DAS LOJAS ---
             link_olx = f"https://olx.com.br{termo_olx}"
             link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
             link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
