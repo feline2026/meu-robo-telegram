@@ -52,7 +52,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
             link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
             link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-            link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+            link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             
