@@ -98,10 +98,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                     font-family: "Segoe UI", Arial, sans-serif;
                     display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh;
                 }}
-                .container {{
-                    width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; margin: 0 auto;
-                }}
-                h1 {{ font-size: 26px; margin-bottom: 5px; font-weight: 800; color: #ffffff; }}
+                .container {{ width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; margin: 0 auto;}}
+                h1 {{ font-size: 26px; margin-bottom: 5px; font-weight: 800; }}
                 .sub {{ color: #a8a8b3; font-size: 16px; margin-bottom: 40px; }}
                 form {{ width: 100%; display: flex; flex-direction: column; gap: 15px; }}
                 input[type="text"] {{
@@ -109,23 +107,19 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                     background-color: #202024; color: #ffffff; font-size: 16px; outline: none; box-sizing: border-box;
                 }}
                 input[type="text"]:focus {{ border-color: #00b37e; }}
-                button[type="submit"] {{
-                    width: 100%; padding: 16px; border: none; border-radius: 8px;
+                button[type="submit"] {{ width: 100%; padding: 16px; border: none; border-radius: 8px;
                     background-color: #00b37e; color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer;
                     margin-top: 5px;
                 }}
-                .box-botoes {{
-                    display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 24px;
-                }}
+                .box-botoes {{ display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 24px;}}
                 .btn {{
-                    display: block; width: 100%; padding: 16px; border: none; border-radius: 8px;
-                    text-decoration: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box;
-                    transition: transform 0.2s;
+                    display: block; padding: 16px; text-decoration: none; color: white; font-weight: bold;
+                    border-radius: 8px; text-align: center; font-size: 15px;
                 }}
                 .btn:hover {{ transform: scale(1.02); }}
                 .btn-ml {{ background-color: #FFF159; color: #333333; }}
                 .btn-amazon {{ background-color: #FF9900; color: #111111; }}
-                .telegram {{ background-color: #00b37e; color: white; margin-top: 20px; }}
+                
                 footer {{ width: 100%; padding: 15px; text-align: center; font-size: 12px; color: #737380; background-color: #1a1a1e; box-sizing: border-box; }}
                 footer a {{ color: #00b37e; text-decoration: none; font-weight: bold; }}
             </style>
@@ -140,16 +134,19 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                     <button type="submit">Buscar Ofertas</button>
                 </form>
                 
+                {texto_resultados}
                 {html_botoes}
                 <a href="https://t.me" target="_blank" class="btn telegram">💬 Abrir no Robô do Telegram</a>
             </div>
-            <footer>Buscador gratuito e independente de utilidade pública. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nNão coletamos dados pessoais.')">Aviso de Transparência</a></footer>
+            <footer>
+                Buscador gratuito e independente de utilidade pública. <a href="#" onclick="alert('Aviso de Transparência:\\n\\nO naosabeondecomprar é um buscador independente de ofertas. Não realizamos vendas, não processamos pagamentos e não coletamos dados pessoais.\\n\\nAo clicar nos botões que direcionam para as lojas parceiras (Mercado Livre, Amazon, Shopee, Magalu e Netshoes), nós poderemos receber uma comissão caso uma compra seja realizada, sem nenhum custo adicional para você.')">Informações de Transparência</a>
+            </footer>
         </body>
         </html>
         """
         self.wfile.write(html_content.encode('utf-8'))
 
-# Porta 10000 idêntica à do projeto 1
+
 def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
     server = HTTPServer(('0.0.0.0', porta), VisualSiteHandler)
@@ -183,7 +180,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
 
     ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
     ID_AFILIADO_AMAZON = "nsoc02-20"
-    ID_AFILIADO_MAGALU = "tf"
 
     termo_site = urllib.parse.quote_plus(produto)
     termo_olx = urllib.parse.quote_plus(produto)
@@ -197,7 +193,7 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
     link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
     link_ml = f"https://lista.mercadolivre.com.br/{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
+    link_amazon = f"https://www.amazon.com.br/s?k={termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
     botoes_links = [
         [InlineKeyboardButton("🛒 Ver no Mercado Livre", url=link_ml)], 
@@ -225,20 +221,14 @@ async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_
     await query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
 
 if __name__ == '__main__':
-    # 1. Inicia o servidor web em segundo plano (Thread) idêntico ao Projeto 1
-    t = threading.Thread(target=ligar_site_producao)
-    t.daemon = True
-    t.start()
+    # ADICIONE APENAS ESTA LINHA ABAIXO (Ela liga o site junto com o Telegram):
+    threading.Thread(target=ligar_site_producao, daemon=True).start()
 
     # 2. Inicia o robô com o ApplicationBuilder prioritário para mensagens de texto
     application = ApplicationBuilder().token(TOKEN).build()
-    
-    # Ordem exata de leitura do primeiro projeto de sucesso
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CallbackQueryHandler(responder_botao_rebusca, pattern='^recriar_busca$'))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, processar_busca_produto))
-    
-    # 3. Dá a partida final na escuta do robô
     application.run_polling()
 
 
