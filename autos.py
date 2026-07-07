@@ -26,7 +26,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
 
-        # Alinhamento perfeito com 8 espaços dentro da função!
         prod_texto = ""
         html_botoes = ""
         texto_resultados = "<h2>StockNegócio - Buscador Automotivo Online e Ativo!</h2>"
@@ -37,7 +36,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         if produto and produto[0]:
             prod_texto = produto[0].strip()
             
-            # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_AMAZON = "nsoc02-20"
             ID_AFILIADO_MAGALU = "tf"
@@ -47,7 +45,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             termo_ml = urllib.parse.quote_plus(prod_texto)
             termo_amazon = urllib.parse.quote_plus(prod_texto)
 
-            # --- LINKS ORIGINAIS DO SEU PROJETO 1 (SEUS AFILIADOS) ---
             link_olx = f"https://olx.com.br{termo_olx}"
             link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
             link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
@@ -74,35 +71,16 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <title>StockNegócio - Clique Aqui</title>
             <style>
-                body {{
-                    margin: 0; padding: 0; background-color: #121212; color: #ffffff;
-                    font-family: "Segoe UI", Arial, sans-serif;
-                    display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh;
-                }}
-                .container {{
-                    width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; margin: 0 auto;
-                }}
+                body {{ margin: 0; padding: 0; background-color: #121212; color: #ffffff; font-family: "Segoe UI", Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100vh; }}
+                .container {{ width: 100%; max-width: 500px; padding: 40px 20px; text-align: center; box-sizing: border-box; margin: 0 auto; }}
                 h1 {{ font-size: 26px; margin-bottom: 5px; font-weight: 800; color: #ffffff; }}
                 .sub {{ color: #a8a8b3; font-size: 16px; margin-bottom: 40px; }}
                 form {{ width: 100%; display: flex; flex-direction: column; gap: 15px; }}
-                input[type="text"] {{
-                    width: 100%; padding: 16px; border: 2px solid #29292e; border-radius: 8px;
-                    background-color: #202024; color: #ffffff; font-size: 16px; outline: none; box-sizing: border-box;
-                }}
+                input[type="text"] {{ width: 100%; padding: 16px; border: 2px solid #29292e; border-radius: 8px; background-color: #202024; color: #ffffff; font-size: 16px; outline: none; box-sizing: border-box; }}
                 input[type="text"]:focus {{ border-color: #00b37e; }}
-                button[type="submit"] {{
-                    width: 100%; padding: 16px; border: none; border-radius: 8px;
-                    background-color: #00b37e; color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer;
-                    margin-top: 5px;
-                }}
-                .box-botoes {{
-                    display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 24px;
-                }}
-                .btn {{
-                    display: block; width: 100%; padding: 16px; border: none; border-radius: 8px;
-                    text-decoration: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box;
-                    transition: transform 0.2s;
-                }}
+                button[type="submit"] {{ width: 100%; padding: 16px; border: none; border-radius: 8px; background-color: #00b37e; color: #ffffff; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 5px; }}
+                .box-botoes {{ display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 24px; }}
+                .btn {{ display: block; width: 100%; padding: 16px; border: none; border-radius: 8px; text-decoration: none; font-size: 16px; font-weight: bold; cursor: pointer; text-align: center; box-sizing: border-box; transition: transform 0.2s; }}
                 .btn:hover {{ transform: scale(1.02); }}
                 .btn-ml {{ background-color: #FFF159; color: #333333; }}
                 .btn-amazon {{ background-color: #FF9900; color: #111111; }}
@@ -115,12 +93,10 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             <div class="container">
                 <h1>🏎️ StockNegócio</h1>
                 <div class="sub">{texto_resultados}</div>
-                
                 <form action="/" method="GET">
                     <input type="text" name="p" value="{prod_texto}" placeholder="O que você quer buscar?">
                     <button type="submit">Buscar Ofertas</button>
                 </form>
-                
                 {html_botoes}
                 <a href="https://t.me" target="_blank" class="btn telegram">💬 Abrir no Robô do Telegram</a>
             </div>
@@ -148,7 +124,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     produto = update.message.text.strip()
     texto_minusculo = produto.lower()
 
-    # --- SISTEMA DE INTELIGÊNCIA ARTIFICIAL AVALIADORA TF ---
     relatorio_ia = ""
     if "km" in texto_minusculo or "000" in texto_minusculo:
         relatorio_ia = (
@@ -178,9 +153,19 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
+    # Lista de botões unificada em uma escrita linear super simples e sem erros de fechamento
     botoes_links = [
-        [InlineKeyboardButton("🌐 Ver no Mercado Livre", url=link_ml)], 
+        [InlineKeyboardButton("🌐 Ver no Mercado Livre", url=link_ml)],
         [InlineKeyboardButton("🌐 Ver na Amazon", url=link_amazon)],
         [InlineKeyboardButton("🚘 Ver na OLX", url=link_olx)],
         [InlineKeyboardButton("🚙 Ver na Webmotors", url=link_webmotors)],
         [InlineKeyboardButton("🚨 Consultar Placa (10% OFF)", url=link_placa)],
+        [InlineKeyboardButton("🌐 Ver no Site Visual tf", url=link_seu_site)],
+        [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
+    ]
+
+    structure_links = InlineKeyboardMarkup(botoes_links)
+    
+    await update.message.reply_text(f"{relatorio_ia}Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:", reply_markup=structure_links, parse_mode="Markdown")
+
+async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
