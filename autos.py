@@ -169,3 +169,5 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     await update.message.reply_text(f"{relatorio_ia}Aqui estão os melhores resultados que encontrei para: *{produto}*\n\nClique no botão abaixo para ver as ofertas:", reply_markup=structure_links, parse_mode="Markdown")
 
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.callback_query.answer(); context.user_data.clear(); await update.callback_query.message.reply_text("Pode enviar o nome do novo produto que deseja buscar!")
+
