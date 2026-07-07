@@ -156,8 +156,7 @@ def ligar_site_producao():
 # =========================================================================
 # 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
 # =========================================================================
-# Comando dinâmico oficial que elimina o erro de Token Inválido do código
-TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TOKEN = "SEU_TOKEN_DO_STOCKNEGOCIO_AQUI"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
