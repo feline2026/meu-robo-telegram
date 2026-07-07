@@ -20,6 +20,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header('Content-type', 'text/html; charset=utf-8')
         self.end_headers()
+        prod_val = ""
 
     def do_GET(self):
         self.send_response(200)
@@ -35,7 +36,8 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         # Correção da lista: Extrai a busca sem os colchetes ['']
         if produto and produto[0]:
             prod_texto = produto[0].strip()
-            
+            prod_val = prod_texto
+
             # --- CONFIGURAÇÃO DOS AFILIADOS ---
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_AMAZON = "nsoc02-20"
