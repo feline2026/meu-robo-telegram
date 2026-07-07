@@ -131,7 +131,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
                 <div class="sub">{texto_resultados}</div>
                 
                 <form action="/" method="GET">
-                    <input type="text" name="p" value="{prod_val}" placeholder="O que você quer buscar?">
+                    <input type="text" name="p" value="{prod_texto}" placeholder="O que você quer buscar?">
                     <button type="submit">Buscar Ofertas</button>
                 </form>
                 
