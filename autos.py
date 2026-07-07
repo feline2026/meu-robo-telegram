@@ -38,7 +38,6 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             
             ID_AFILIADO_MERCADO_LIVRE = "TARCFELL"
             ID_AFILIADO_AMAZON = "nsoc02-20"
-            ID_AFILIADO_MAGALU = "tf"
 
             termo_olx = urllib.parse.quote_plus(prod_texto.replace(" ", "-"))
             termo_webmotors = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
@@ -47,7 +46,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
 
             link_olx = f"https://olx.com.br{termo_olx}"
             link_webmotors = f"https://webmotors.com.br{termo_webmotors}"
-            link_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+            link_placa = f"https://olhonocarro.com.br{ID_AFILIADO}"
             link_ml = f"https://mercadolivre.com.br{termo_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
             link_amazon = f"https://amazon.com.br{termo_amazon}&tag={ID_AFILIADO_AMAZON}"
 
