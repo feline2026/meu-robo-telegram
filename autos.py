@@ -156,7 +156,7 @@ def ligar_site_producao():
 # =========================================================================
 # 🤖 FLUXO DO ROBÔ DO TELEGRAM (Mecanismo Idêntico ao Principal)
 # =========================================================================
-TOKEN = "SEU_TOKEN_DO_STOCKNEGOCIO_AQUI"
+TOKEN = "8645090278:AAG7WbkUNdEhkiG51yt0HYQSEQ_esorYABE"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
