@@ -21,7 +21,7 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
             l_olx = f"https://olx.com.br{t_olx}"
             l_wm = f"https://webmotors.com.br{t_wm}"
             l_pl = f"https://olhonocarro.com.br"
-            l_ml = f"https://lista.mercadolivre.com.br/{t_ml}?as_campaign=TARCFELL"
+            l_ml = f"https://mercadolivre.com.br{t_ml}?as_campaign=TARCFELL"
             l_az = f"https://amazon.com.br{t_az}&tag=nsoc02-20"
             texto_resultados = f"<h2>Resultados encontrados para: <span>{prod_texto}</span></h2>"
             html_botoes = f'<div class="box-botoes"><a href="{l_olx}" target="_blank" class="btn" style="background-color: #6E0AD6; color: white;">🚘 Ver na OLX</a><a href="{l_wm}" target="_blank" class="btn" style="background-color: #E31C23; color: white;">🚙 Ver na Webmotors</a><a href="{l_pl}" target="_blank" class="btn" style="background-color: #00A859; color: white;">🚨 Consultar Placa (10% OFF)</a><a href="{l_ml}" target="_blank" class="btn btn-ml">🔧 Ver no Mercado Livre</a><a href="{l_az}" target="_blank" class="btn btn-amazon">📦 Ver na Amazon</a></div>'
