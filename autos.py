@@ -1,4 +1,4 @@
-mport urllib.parse
+import urllib.parse
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 import os, threading
