@@ -48,7 +48,7 @@ def ligar_site_producao():
     porta = int(os.environ.get("PORT", 10000))
     HTTPServer(('0.0.0.0', porta), VisualSiteHandler).serve_forever()
 
-TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TOKEN = os.environ.get("8645090278:AAGaSFmVBeDdEC_O0Sxf2Dc_ybeFS86utyc")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
