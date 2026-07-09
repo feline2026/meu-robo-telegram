@@ -65,24 +65,26 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     t_ml = urllib.parse.quote_plus(produto)
     t_az = urllib.parse.quote_plus(produto)
     
-    l_site = f"https://onrender.com{t_site}"
-    l_olx = f"https://olx.com.br{t_olx}"
-    l_wm = f"https://webmotors.com.br{t_wm}"
-    l_pl = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-    l_ml = f"https://mercadolivre.com.br{t_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
-    l_az = f"https://amazon.com.br{t_az}&tag={ID_AFILIADO_AMAZON}"
-
+    # Nomes de variáveis limpos e sem perigo de confundir 'l' com '1'
+    url_site = f"https://onrender.com{t_site}"
+    url_olx = f"https://olx.com.br{t_olx}"
+    url_wm = f"https://webmotors.com.br{t_wm}"
+    url_placa = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
+    url_ml = f"https://mercadolivre.com.br{t_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+    url_amazon = f"https://amazon.com.br{t_az}&tag={ID_AFILIADO_AMAZON}"
     
     botoes = [
-        [InlineKeyboardButton("🌐 Ver no Mercado Livre", url=l_ml)],
-        [InlineKeyboardButton("🌐 Ver na Amazon", url=l_az)],
-        [InlineKeyboardButton("🚘 Ver na OLX", url=l_olx)],
-        [InlineKeyboardButton("🚙 Ver na Webmotors", url=l_wm)],
-        [InlineKeyboardButton("🚨 Consultar Placa (10% OFF)", url=l_pl)],
-        [InlineKeyboardButton("🌐 Ver no Site Visual tf", url=l_site)],
+        [InlineKeyboardButton("🌐 Ver no Mercado Livre", url=url_ml)],
+        [InlineKeyboardButton("🌐 Ver na Amazon", url=url_amazon)],
+        [InlineKeyboardButton("🚘 Ver na OLX", url=url_olx)],
+        [InlineKeyboardButton("🚙 Ver na Webmotors", url=url_wm)],
+        [InlineKeyboardButton("🚨 Consultar Placa (10% OFF)", url=url_placa)],
+        [InlineKeyboardButton("🌐 Ver no Site Visual tf", url=url_site)],
         [InlineKeyboardButton("🔄 Buscar outro produto", callback_data='buscar')]
     ]
+    
     await update.message.reply_text(f"Resultados para: *{produto}*\nClique abaixo:", reply_markup=InlineKeyboardMarkup(botoes), parse_mode="Markdown")
+
 
 async def responder_botao_rebusca(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.callback_query.answer(); context.user_data.clear(); await update.callback_query.message.reply_text("Pode enviar a nova busca!")
