@@ -69,8 +69,9 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     l_olx = f"https://olx.com.br{t_olx}"
     l_wm = f"https://webmotors.com.br{t_wm}"
     l_pl = f"https://olhonocarro.com.br{ID_AFILIADO_MAGALU}"
-    l_ml = f"https://lista.mercadolivre.com.br/{t_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
+    l_ml = f"https://mercadolivre.com.br{t_ml}?as_campaign={ID_AFILIADO_MERCADO_LIVRE}"
     l_az = f"https://amazon.com.br{t_az}&tag={ID_AFILIADO_AMAZON}"
+
     
     botoes = [
         [InlineKeyboardButton("🌐 Ver no Mercado Livre", url=l_ml)],
