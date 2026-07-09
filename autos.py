@@ -16,8 +16,9 @@ class VisualSiteHandler(BaseHTTPRequestHandler):
         prod_texto = ""; html_botoes = ""; texto_resultados = "<h2>StockNegócio - Buscador Automotivo Ativo!</h2>"
         query_params = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
         produto = query_params.get('p', [''])
-        if produto and produto:
-            prod_texto = produto.strip()
+        if produto:
+            prod_texto = produto[0].strip()
+
             t_olx = urllib.parse.quote_plus(prod_texto)
             t_wm = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             t_ml = urllib.parse.quote_plus(prod_texto)
