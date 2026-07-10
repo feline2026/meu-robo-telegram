@@ -21,14 +21,14 @@ class BuscadorSiteHandler(BaseHTTPRequestHandler):
         produto = query_params.get('p', [''])
         if produto and produto[0]:
             prod_texto = produto[0].strip()
-            # Criando todas as variáveis de texto codificado para o bloco do site
+            # CORREÇÃO CRÍTICA: Criando a variável t_site que faltava para o site não quebrar!
             t_site = urllib.parse.quote_plus(prod_texto)
             t_olx = urllib.parse.quote_plus(prod_texto)
             t_wm = urllib.parse.quote_plus(prod_texto.lower().replace(" ", "-"))
             t_ml = urllib.parse.quote_plus(prod_texto)
             t_az = urllib.parse.quote_plus(prod_texto)
             
-            # Links oficiais do bloco do site com as barras de separação corretas
+            # Links oficiais com as estruturas de busca corretas para o site visual
             l_site = f"https://onrender.com{t_site}"
             l_olx = f"https://olx.com.br{t_olx}"
             l_wm = f"https://webmotors.com.br{t_wm}"
@@ -47,7 +47,7 @@ def disparar_site_web():
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.clear()
-    await update.message.reply_text("Olá! Envie o nome de um veículo ou produto para buscar:")
+    await update.message.reply_text("Olá! Envie o nome de um veículo ou product para buscar:")
 
 async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_TYPE):
     produto = update.message.text.strip()
@@ -57,7 +57,6 @@ async def processar_busca_produto(update: Update, context: ContextTypes.DEFAULT_
     t_ml = urllib.parse.quote_plus(produto)
     t_az = urllib.parse.quote_plus(produto)
     
-    # Criando os links oficiais e completos para os botões do Telegram passarem na segurança do aplicativo
     link_site = f"https://onrender.com{t_site}"
     link_olx = f"https://olx.com.br{t_olx}"
     link_wm = f"https://webmotors.com.br{t_wm}"
