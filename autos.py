@@ -9,7 +9,7 @@ ID_AFILIADO_AMAZON = "nsoc02-20"
 ID_AFILIADO_MAGALU = "tf"
 
 # Token fixado direto no topo do arquivo para estabilidade de rede
-TOKEN = "8645090278:AAEJCK3K8mLv2AhHDNJ004de-2NdoB5uL3Q"
+TOKEN = "8645090278:AAEeIaVSc79INlOh_e6Jng9yjI5DsFi32wk"
 
 class BuscadorSiteHandler(BaseHTTPRequestHandler):
     def do_HEAD(self):
