@@ -7,7 +7,7 @@ from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 
 # DEFINA SUAS CHAVES AQUI
-TOKEN_ELETRONICOS = "8645090278:AAG5drnx9dh414s7FFFKM0yU60Ci-mUab10" # Seu token limpo
+TOKEN_ELETRONICOS = "8629034952:AAGj1S5xc2FsbH1M02yfPaULipKWLehpF-k" # Seu token limpo
 GEMINI_KEY = "AQ.Ab8RN6Li4Ur45FCEDf_XdUHeTxrXmvtUbxv8ynFnfKUXKq0ujA" # Coloque aqui a sua chave do Gemini
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
