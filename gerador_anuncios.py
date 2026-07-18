@@ -1,94 +1,66 @@
-import urllib.parse
 import os
 import asyncio
 import httpx
 import base64
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# DEFINA SUAS CHAVES AQUI
-TOKEN_ELETRONICOS = "8629034952:AAGj1S5xc2FsbH1M02yfPaULipKWLehpF-k" # Seu token limpo
-GEMINI_KEY = "AQ.Ab8RN6Li4Ur45FCEDf_XdUHeTxrXmvtUbxv8ynFnfKUXKq0ujA" # Coloque aqui a sua chave do Gemini
+# CHAVES GLOBAIS - COLOQUE OS SEUS CÓDIGOS REAIS DO COMPUTADOR ENTRE AS ASPAS:
+TOKEN_ELETRONICOS = "8629034952:AAGj1S5xc2FsbH1M02yfPaULipKWLehpF-k"
+GEMINI_KEY = "AQ.Ab8RN6Li4Ur45FCEDf_XdUHeTxrXmvtUbxv8ynFnfKUXKq0ujA"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
-        "📦 *Bem-vindo ao Gerador Automático de Anúncios Tarciso!*\n\n"
-        "Estou pronto para te ajudar com o seu lote de eletrônicos. "
-        "Basta me enviar a *FOTO* de qualquer aparelho (iPhone, videogame, notebook, etc.) "
-        "que eu vou analisar o mercado e criar o anúncio perfeito para você colar nas plataformas!"
+        "📦 *Bem-vindo ao seu Assistente de Eletrônicos Tarciso!*\n\n"
+        "Estou pronto para catalogar o seu lote. "
+        "Basta me enviar a *FOTO* de qualquer aparelho (iPhone, videogame, notebook) "
+        "que eu vou calcular os preços de mercado e criar o anúncio pronto!"
     )
 
 async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not update.message.photo:
         return
         
-    mensagem_aguarde = await update.message.reply_text("📸 _Analisando a foto do eletrônico e pesquisando preços de mercado... Aguarde..._")
-    
-    # 1. Baixa a foto enviada pelo Tarciso no Telegram
-    file = await context.bot.get_file(update.message.photo[-1].file_id)
-    img_bytes = await file.download_as_bytearray()
-    
-    # 2. Configura a chamada para o cérebro multimodal do Gemini
-    url = f"https://googleapis.com{GEMINI_KEY}"
-    headers = {"Content-Type": "application/json"}
-    
-    prompt = (
-        "Analise cuidadosamente a imagem deste produto eletrônico. Com base no modelo identificado, faça duas coisas separadas:\n\n"
-        "BLOCO 1: RELATÓRIO DE PREÇOS\n"
-        "Pesquise mentalmente os valores praticados atualmente no Mercado Livre e OLX do Brasil para este item usado e forneça:\n"
-        "- Preço Menor (Venda Rápida/Desapego)\n"
-        "- Preço Médio (Valor Justo de Mercado)\n"
-        "- Preço Maior (Item Impecável com acessórios)\n\n"
-        "BLOCO 2: ANÚNCIO PRONTO PARA PLATAFORMAS\n"
-        "Crie uma descrição magnética de vendas (copywriting) perfeita para colar na OLX ou Mercado Livre. Inclua:\n"
-        "- Um Título Matador e curto\n"
-        "- Destaques do produto com emojis\n"
-        "- Uma ficha técnica limpa (deixe espaços em branco como [Saúde da Bateria: __%] ou [Armazenamento: __GB] se não puder identificar na foto para eu preencher manual)\n"
-        "- Gatilho de urgência para fechar negócio rápido.\n\n"
-        "Seja muito direto, profissional e use emojis organizados. Remova todos os asteriscos do texto."
-    )
-    
-    img_base64 = base64.b64encode(img_bytes).decode('utf-8')
-    
-    payload = {
-        "contents": [{
-            "parts": [
-                {"text": prompt},
-                {
-                    "inline_data": {
-                        "mime_type": "image/jpeg",
-                        "data": img_base64
-                    }
-                }
-            ]
-        }]
-    }
+    mensagem_aguarde = await update.message.reply_text("📸 _Analisando o aparelho e pesquisando preços... Aguarde..._")
     
     try:
+        file = await context.bot.get_file(update.message.photo[-1].file_id)
+        img_bytes = await file.download_as_bytearray()
+        img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+        
+        url = f"https://googleapis.com{GEMINI_KEY}"
+        headers = {"Content-Type": "application/json"}
+        
+        prompt = (
+            "Analise cuidadosamente a imagem deste produto eletrônico. Com base no modelo identificado, faça:\n\n"
+            "1. RELATÓRIO DE PREÇOS: Forneça o Preço Menor (Desapego), Preço Médio (Justo) e Preço Maior praticados na OLX e Mercado Livre no Brasil atualmente.\n\n"
+            "2. ANÚNCIO PRONTO PARA COPIAR: Crie uma descrição de vendas magnética (copywriting) para colar nas plataformas. Inclua um Título curto e chamativo, destaques com emojis e uma ficha técnica limpa com espaços em branco como [Saúde da Bateria: __%] para eu preencher manual se não puder ler na foto.\n\n"
+            "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
+        )
+        
+        payload = {
+            "contents": [{
+                "parts": [
+                    {"text": prompt},
+                    {"inline_data": {"mime_type": "image/jpeg", "data": img_base64}}
+                ]
+            }]
+        }
+        
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.post(url, json=payload, headers=headers, timeout=25.0)
             if response.status_code == 200:
                 dados = response.json()
-                # CORREÇÃO DA LINHA 57: 'candidates' em vez de 'contents'
-                texto_ia = dados['candidates'][0]['content']['parts'][0]['text']
+                texto_ia = dados['candidates']['content']['parts']['text']
                 texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
                 
-                # Divide o texto para enviar em dois balões separados, facilitando a cópia
-                partes = texto_limpo.split("BLOCO 2:")
-                
                 await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=mensagem_aguarde.message_id)
-                
-                # Envia o Relatório de Preços (Bloco 1)
-                await update.message.reply_text(f"📊 *ESTATÍSTICAS DE MERCADO:*\n\n{partes[0].strip()}")
-                
-                # Envia o Anúncio Pronto (Bloco 2)
-                if len(partes) > 1:
-                    await update.message.reply_text(f"✍️ *ANÚNCIO PRONTO PARA COPIAR E COLAR:*\n\n{partes[1].strip()}")
+                await update.message.reply_text(texto_limpo)
                 return
                 
-            await update.message.reply_text(f"❌ Erro na análise do Google (Código HTTP {response.status_code})")
+            await update.message.reply_text(f"❌ Erro na consulta do Google (HTTP {response.status_code})")
     except Exception as e:
-        await update.message.reply_text("❌ Ocorreu um erro ao processar a imagem. Certifique-se de que a foto está nítida.")
+        await update.message.reply_text("❌ Ocorreu um erro ao ler a imagem. Garanta que a foto está nítida.")
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN_ELETRONICOS).build()
