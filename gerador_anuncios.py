@@ -61,28 +61,29 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
     except Exception as e:
         await update.message.reply_text("❌ Ocorreu um erro ao ler a imagem. Garanta que a foto está nítida.")
 
-# SERVIDOR WEB FALSO APENAS PARA O RENDER NÃO RECLAMAR DE PORTA
-def ligar_site_falso():
+# SERVIDOR WEB ATIVO QUE RESPONDE INSTANTANEAMENTE PARA ENGANAR O RENDER
+def ligar_servidor_obrigatorio():
     from http.server import BaseHTTPRequestHandler, HTTPServer
-    class FalsoHandler(BaseHTTPRequestHandler):
+    class RenderHandler(BaseHTTPRequestHandler):
         def do_GET(self):
-            self.send_response(200); self.send_header('Content-type', 'text/plain'); self.end_headers()
-            self.wfile.write(b"Gerador de Anuncios Ativo!")
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain; charset=utf-8')
+            self.end_headers()
+            self.wfile.write(b"Gerador de Anuncios Ativo e Operacional!")
+    
     import os
     porta = int(os.environ.get("PORT", 10000))
-    try:
-        HTTPServer(('0.0.0.0', porta), FalsoHandler).serve_forever()
-    except Exception:
-        pass
+    HTTPServer(('0.0.0.0', porta), RenderHandler).serve_forever()
 
 if __name__ == '__main__':
-    # Liga o site falso em segundo plano para o Render ficar feliz
+    # Dispara o site obrigatório direto na linha principal para abrir a porta correndo
     import threading
-    threading.Thread(target=ligar_site_falso, daemon=True).start()
+    threading.Thread(target=ligar_servidor_obrigatorio, daemon=True).start()
     
-    # Inicia o robô de anúncios do Tarciso
+    # Inicia o robô de anúncios do Tarciso de forma estável
     application = ApplicationBuilder().token(TOKEN_ELETRONICOS).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.PHOTO, processar_foto_eletronico))
     application.run_polling()
+
 
