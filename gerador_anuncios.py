@@ -61,8 +61,28 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
     except Exception as e:
         await update.message.reply_text("❌ Ocorreu um erro ao ler a imagem. Garanta que a foto está nítida.")
 
+# SERVIDOR WEB FALSO APENAS PARA O RENDER NÃO RECLAMAR DE PORTA
+def ligar_site_falso():
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+    class FalsoHandler(BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200); self.send_header('Content-type', 'text/plain'); self.end_headers()
+            self.wfile.write(b"Gerador de Anuncios Ativo!")
+    import os
+    porta = int(os.environ.get("PORT", 10000))
+    try:
+        HTTPServer(('0.0.0.0', porta), FalsoHandler).serve_forever()
+    except Exception:
+        pass
+
 if __name__ == '__main__':
+    # Liga o site falso em segundo plano para o Render ficar feliz
+    import threading
+    threading.Thread(target=ligar_site_falso, daemon=True).start()
+    
+    # Inicia o robô de anúncios do Tarciso
     application = ApplicationBuilder().token(TOKEN_ELETRONICOS).build()
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.PHOTO, processar_foto_eletronico))
     application.run_polling()
+
