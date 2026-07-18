@@ -5,9 +5,8 @@ import base64
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
-# CHAVES GLOBAIS - COLOQUE OS SEUS CÓDIGOS REAIS DO COMPUTADOR ENTRE AS ASPAS:
-TOKEN_ELETRONICOS = "8629034952:AAGj1S5xc2FsbH1M02yfPaULipKWLehpF-k"
-GEMINI_KEY = "AQ.Ab8RN6Li4Ur45FCEDf_XdUHeTxrXmvtUbxv8ynFnfKUXKq0ujA"
+TOKEN_ELETRONICOS = os.environ.get("TELEGRAM_TOKEN")
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
