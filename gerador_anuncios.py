@@ -33,9 +33,9 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         headers = {"Content-Type": "application/json"}
         
         prompt = (
-            "Analise cuidadosamente a imagem deste produto eletrônico. Com base no modelo identificado, faça:\n\n"
-            "1. RELATÓRIO DE PREÇOS: Forneça o Preço Menor (Desapego), Preço Médio (Justo) e Preço Maior praticados na OLX e Mercado Livre no Brasil atualmente.\n\n"
-            "2. ANÚNCIO PRONTO PARA COPIAR: Crie uma descrição de vendas magnética (copywriting) para colar nas plataformas. Inclua um Título curto e chamativo, destaques com emojis e uma ficha técnica limpa usando linhas simples para eu preencher manual se não puder ler na foto.\n\n"
+            "Aja como um especialista em e-commerce no Brasil. Analise cuidadosamente a imagem deste produto. Com base no modelo identificado, faça:\n\n"
+            "1. RELATÓRIO DE PREÇOS: Forneça o Preço Menor para desapego, Preço Médio justo e Preço Maior praticados na OLX e Mercado Livre atualmente.\n\n"
+            "2. ANÚNCIO PRONTO PARA COPIAR: Crie uma descrição de vendas magnética para colar nas plataformas. Inclua um Título curto e chamativo, destaques com emojis e uma ficha técnica limpa usando linhas simples para eu preencher manual.\n\n"
             "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
         )
         
@@ -43,10 +43,11 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             "contents": [{
                 "parts": [
                     {"text": prompt},
-                    {"inlineData": {"mime_type": "image/jpeg", "data": img_base64}}
+                    {"inline_data": {"mime_type": "image/jpeg", "data": img_base64}}
                 ]
             }]
         }
+
         
         async with httpx.AsyncClient(verify=False) as client:
             response = await client.post(url, json=payload, headers=headers, timeout=25.0)
