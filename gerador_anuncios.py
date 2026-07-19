@@ -54,7 +54,8 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         )
         
         # Envia a foto usando a estrutura multimodal síncrona/assíncrona limpa de dicionário
-        response = model.generate_content([
+                # FORMATO ASSÍNCRONO PURO COM AWAIT PARA EVITAR TRAVAMENTOS DE SERVIDOR
+        response = await model.generate_content_async([
             {"mime_type": "image/jpeg", "data": bytes(img_bytes)},
             prompt
         ])
