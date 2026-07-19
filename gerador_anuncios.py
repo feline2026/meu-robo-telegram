@@ -1,19 +1,24 @@
 import os
 import asyncio
 import base64
+import threading
+import io
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 TOKEN_ELETRONICOS = os.environ.get("TELEGRAM_TOKEN")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 
 # SERVIDOR WEB OBRIGATÓRIO PARA O RENDER NÃO RECLAMAR DE PORTA
 def ligar_servidor_obrigatorio():
-    from http.server import BaseHTTPRequestHandler, HTTPServer
     class RenderHandler(BaseHTTPRequestHandler):
         def do_GET(self):
-            self.send_response(200); self.send_header('Content-type', 'text/plain; charset=utf-8'); self.end_headers()
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain; charset=utf-8')
+            self.end_headers()
             self.wfile.write(b"Gerador de Anuncios Ativo e Operacional!")
+            
     porta = int(os.environ.get("PORT", 10000))
     try:
         HTTPServer(('0.0.0.0', porta), RenderHandler).serve_forever()
@@ -39,10 +44,11 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         file = await context.bot.get_file(foto_maior.file_id)
         img_bytes = await file.download_as_bytearray()
         
-        # IMPORTAÇÃO NATIVA DIRETA DA BIBLIOTECA DO GOOGLE
+        # IMPORTAÇÕES NATIVAS EXIGIDAS
         import google.generativeai as genai
+        from PIL import Image
         
-        # Configura a chave sem depender de objetos complexos de tipos
+        # Configura a IA do Google
         genai.configure(api_key=GEMINI_KEY)
         model = genai.GenerativeModel('gemini-1.5-flash')
         
@@ -53,28 +59,30 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
         )
         
-        # Envia a foto usando a estrutura multimodal síncrona/assíncrona limpa de dicionário
-                # FORMATO ASSÍNCRONO PURO COM AWAIT PARA EVITAR TRAVAMENTOS DE SERVIDOR
-        response = await model.generate_content_async([
-            {"mime_type": "image/jpeg", "data": bytes(img_bytes)},
-            prompt
-        ])
+        # TRANSFORMAÇÃO BLINDADA: Converte os bytes brutos em uma Imagem PIL real que o Gemini adora
+        imagem_pil = Image.open(io.BytesIO(bytes(img_bytes)))
+        
+        # Envia a imagem e o texto para a IA do Google de forma assíncrona
+        response = await model.generate_content_async([imagem_pil, prompt])
         
         texto_ia = response.text
         texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
         
         await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=mensagem_aguarde.message_id)
         await update.message.reply_text(texto_limpo)
-        return
-                
+        
     except Exception as e:
-        await update.message.reply_text("❌ Ocorreu um erro ao processar a imagem. Garanta que a foto está nítida.")
+        print(f"Erro real detectado nos logs: {e}")
+        try:
+            await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=mensagem_aguarde.message_id)
+        except Exception:
+            pass
+        await update.message.reply_text("❌ Ocorreu um erro ao processar a imagem. Garanta que a sua chave GEMINI_API_KEY foi validada no Google AI Studio.")
 
 if __name__ == '__main__':
-    import threading
     threading.Thread(target=ligar_servidor_obrigatorio, daemon=True).start()
     
     application = ApplicationBuilder().token(TOKEN_ELETRONICOS).build()
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.PHOTO, processar_foto_eletronico))
+    application.add_handler(MessageHandler(filters.PHOTO, processar_busca_produto if 'processar_busca_produto' in locals() else processar_foto_eletronico))
     application.run_polling()
