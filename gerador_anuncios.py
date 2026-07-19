@@ -54,7 +54,9 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             response = await client.post(url, json=payload, headers=headers, timeout=25.0)
             if response.status_code == 200:
                 dados = response.json()
-                texto_ia = dados['candidates']['content']['parts']['text']
+                # Trocamos 'candidates' por 'contents' para bater com o formato do Google Gemini 1.5
+                texto_ia = dados['contents'][0]['parts'][0]['text']
+
                 texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
                 
                 await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=mensagem_aguarde.message_id)
