@@ -54,8 +54,8 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             response = await client.post(url, json=payload, headers=headers, timeout=25.0)
             if response.status_code == 200:
                 dados = response.json()
-                # Trocamos 'candidates' por 'contents' para bater com o formato do Google Gemini 1.5
-                texto_ia = dados['contents'][0]['parts'][0]['text']
+                texto_ia = dados['candidates'][0]['content']['parts'][0]['text']
+                texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
 
                 texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
                 
