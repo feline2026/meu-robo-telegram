@@ -44,13 +44,13 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         file = await context.bot.get_file(foto_maior.file_id)
         img_bytes = await file.download_as_bytearray()
         
-        # IMPORTAÇÕES NATIVAS EXIGIDAS
-        import google.generativeai as genai
+        # 🆕 IMPORTAÇÃO SEGUINDO A NOVA BIBLIOTECA ATUALIZADA DO GOOGLE
+        from google import genai
+        from google.genai import types
         from PIL import Image
         
-        # Configura a IA do Google
-        genai.configure(api_key=GEMINI_KEY)
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        # Inicializa o cliente seguindo o novo padrão do Google AI Studio
+        client = genai.Client(api_key=GEMINI_KEY)
         
         prompt = (
             "Aja como um especialista em e-commerce no Brasil. Analise cuidadosamente a imagem deste produto. Com base no modelo identificado, faça:\n\n"
@@ -59,11 +59,14 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
         )
         
-        # TRANSFORMAÇÃO BLINDADA: Converte os bytes brutos em uma Imagem PIL real que o Gemini adora
+        # Converte os bytes brutos para formato de imagem PIL compatível
         imagem_pil = Image.open(io.BytesIO(bytes(img_bytes)))
         
-        # Envia a imagem e o texto para a IA do Google de forma assíncrona
-        response = await model.generate_content_async([imagem_pil, prompt])
+        # 🆕 Chamada oficial assíncrona da nova API do Gemini
+        response = await client.aio.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=[imagem_pil, prompt]
+        )
         
         texto_ia = response.text
         texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
@@ -84,5 +87,5 @@ if __name__ == '__main__':
     
     application = ApplicationBuilder().token(TOKEN_ELETRONICOS).build()
     application.add_handler(CommandHandler("start", start))
-    application.add_handler(MessageHandler(filters.PHOTO, processar_busca_produto if 'processar_busca_produto' in locals() else processar_foto_eletronico))
+    application.add_handler(MessageHandler(filters.PHOTO, processar_foto_eletronico))
     application.run_polling()
