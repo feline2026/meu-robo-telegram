@@ -43,7 +43,7 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             "contents": [{
                 "parts": [
                     {"text": prompt},
-                    {"inline_data": {"mime_type": "image/jpeg", "data": img_base64}}
+                    {"inlineData": {"mime_type": "image/jpeg", "data": img_base64}}
                 ]
             }]
         }
