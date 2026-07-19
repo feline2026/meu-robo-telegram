@@ -22,13 +22,11 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         
     mensagem_aguarde = await update.message.reply_text("📸 _Analisando o aparelho e pesquisando preços... Aguarde..._")
     
-        try:
+    try:
         foto_maior = update.message.photo[-1]
         file = await context.bot.get_file(foto_maior.file_id)
         
         img_bytes = await file.download_as_bytearray()
-        
-        # LINHA CORRIGIDA COM A FUNÇÃO bytes() ENVOLVENDO A VARIÁVEL:
         img_base64 = base64.b64encode(bytes(img_bytes)).decode('utf-8')
         
         url = f"https://googleapis.com{GEMINI_KEY}"
@@ -37,7 +35,7 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         prompt = (
             "Analise cuidadosamente a imagem deste produto eletrônico. Com base no modelo identificado, faça:\n\n"
             "1. RELATÓRIO DE PREÇOS: Forneça o Preço Menor (Desapego), Preço Médio (Justo) e Preço Maior praticados na OLX e Mercado Livre no Brasil atualmente.\n\n"
-            "2. ANÚNCIO PRONTO PARA COPIAR: Crie uma descrição de vendas magnética (copywriting) para colar nas plataformas. Inclua um Título curto e chamativo, destaques com emojis e uma ficha técnica limpa com espaços em branco como [Saúde da Bateria: __%] para eu preencher manual se não puder ler na foto.\n\n"
+            "2. ANÚNCIO PRONTO PARA COPIAR: Crie uma descrição de vendas magnética (copywriting) para colar nas plataformas. Inclua um Título curto e chamativo, destaques com emojis e uma ficha técnica limpa usando linhas simples para eu preencher manual se não puder ler na foto.\n\n"
             "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
         )
         
@@ -54,9 +52,7 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             response = await client.post(url, json=payload, headers=headers, timeout=25.0)
             if response.status_code == 200:
                 dados = response.json()
-                texto_ia = dados['candidates'][0]['content']['parts'][0]['text']
-                texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
-
+                texto_ia = dados['candidates']['content']['parts']['text']
                 texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
                 
                 await context.bot.delete_message(chat_id=update.effective_chat.id, message_id=mensagem_aguarde.message_id)
@@ -66,6 +62,7 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             await update.message.reply_text(f"❌ Erro na consulta do Google (HTTP {response.status_code})")
     except Exception as e:
         await update.message.reply_text("❌ Ocorreu um erro ao ler a imagem. Garanta que a foto está nítida.")
+
 
 # SERVIDOR WEB ATIVO QUE RESPONDE INSTANTANEAMENTE PARA ENGANAR O RENDER
 def ligar_servidor_obrigatorio():
