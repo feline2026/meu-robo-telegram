@@ -39,11 +39,12 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         file = await context.bot.get_file(foto_maior.file_id)
         img_bytes = await file.download_as_bytearray()
         
-        # USA A BIBLIOTECA OFICIAL DO GOOGLE QUE EVITA ERROS DE URL E PAYLOAD
-        from google import genai
-        from google.genai import types
+        # IMPORTAÇÃO NATIVA DIRETA DA BIBLIOTECA DO GOOGLE
+        import google.generativeai as genai
         
-        client = genai.Client(api_key=GEMINI_KEY)
+        # Configura a chave sem depender de objetos complexos de tipos
+        genai.configure(api_key=GEMINI_KEY)
+        model = genai.GenerativeModel('gemini-1.5-flash')
         
         prompt = (
             "Aja como um especialista em e-commerce no Brasil. Analise cuidadosamente a imagem deste produto. Com base no modelo identificado, faça:\n\n"
@@ -52,14 +53,11 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
             "Seja muito direto, remova todos os asteriscos do texto e use emojis organizados."
         )
         
-        # Envia a foto usando o canal oficial do Gemini 1.5 Flash
-        response = await client.aio.models.generate_content(
-            model='gemini-1.5-flash',
-            contents=[
-                types.Part.from_bytes(data=bytes(img_bytes), mime_type='image/jpeg'),
-                prompt
-            ]
-        )
+        # Envia a foto usando a estrutura multimodal síncrona/assíncrona limpa de dicionário
+        response = model.generate_content([
+            {"mime_type": "image/jpeg", "data": bytes(img_bytes)},
+            prompt
+        ])
         
         texto_ia = response.text
         texto_limpo = texto_ia.replace("**", "").replace("*", "").replace("#", "")
