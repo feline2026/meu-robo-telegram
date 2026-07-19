@@ -22,14 +22,14 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
         
     mensagem_aguarde = await update.message.reply_text("📸 _Analisando o aparelho e pesquisando preços... Aguarde..._")
     
-    try:
-        # Pega a foto em tamanho maior enviada no chat
+        try:
         foto_maior = update.message.photo[-1]
         file = await context.bot.get_file(foto_maior.file_id)
         
-        # MÉTODO OFICIAL ATUALIZADO DA BIBLIOTECA (VERSÃO 20+):
         img_bytes = await file.download_as_bytearray()
-        img_base64 = base64.b64encode(img_bytes).decode('utf-8')
+        
+        # LINHA CORRIGIDA COM A FUNÇÃO bytes() ENVOLVENDO A VARIÁVEL:
+        img_base64 = base64.b64encode(bytes(img_bytes)).decode('utf-8')
         
         url = f"https://googleapis.com{GEMINI_KEY}"
         headers = {"Content-Type": "application/json"}
