@@ -23,14 +23,12 @@ async def processar_foto_eletronico(update: Update, context: ContextTypes.DEFAUL
     mensagem_aguarde = await update.message.reply_text("📸 _Analisando o aparelho e pesquisando preços... Aguarde..._")
     
     try:
-        # CORREÇÃO DO DOWNLOAD DA FOTO DO TELEGRAM WEB:
+        # Pega a foto em tamanho maior enviada no chat
         foto_maior = update.message.photo[-1]
         file = await context.bot.get_file(foto_maior.file_id)
         
-        # Faz o download físico dos bytes da imagem direto no servidor
-        import io
-        img_bytes = bytearray()
-        await file.download_to_memory(out=img_bytes)
+        # MÉTODO OFICIAL ATUALIZADO DA BIBLIOTECA (VERSÃO 20+):
+        img_bytes = await file.download_as_bytearray()
         img_base64 = base64.b64encode(img_bytes).decode('utf-8')
         
         url = f"https://googleapis.com{GEMINI_KEY}"
